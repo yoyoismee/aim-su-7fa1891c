@@ -1,0 +1,1991 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>AI as Material</title><style>:root{color-scheme:light}body{margin:0;font:14px system-ui;background:#FEF9F5}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=Albert+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400&family=Caveat:wght@400&display=swap">
+<style>
+/* Layout: full-viewport pages, scroll-snapped, keyboard-driven on desktop; a plain long page on phones.
+   Fig n Table identity: warm off-white ground, ink black, four shapes as the only ornament. Coral from Paxa appears only on "live" controls. */
+:root{
+  --bg:#FEF9F5; --fg:#0C0B0A; --mute:#7E7570; --line:#E4DAD1; --soft:#F3EBE3; --ink2:#2A2522;
+  --live:#E8694A; --live-ink:#FFF7F3;
+  --display:"Outfit",system-ui,sans-serif;
+  --body:"Albert Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --gutter:clamp(16px,5vw,72px);
+  color-scheme:light; /* single theme: the Fig n Table off-white in every viewer theme */
+}
+
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:clamp(17px,1.35vw,22px);line-height:1.45;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+img{max-width:100%;display:block}
+figure{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--live);outline-offset:3px}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:.35em .9em;cursor:pointer}
+button:hover{border-color:var(--fg)}
+input[type=text]{font:inherit;color:inherit;background:transparent;border:0;border-bottom:1px solid var(--line);padding:.4em 0;width:100%;min-width:0}
+input[type=text]:focus{outline:none;border-bottom-color:var(--live)}
+
+/* Deck */
+#deck{scroll-snap-type:y mandatory;height:100svh;overflow-y:auto;overscroll-behavior:contain}
+.pg{scroll-snap-align:start;min-height:100svh;padding:clamp(40px,6vh,64px) var(--gutter) clamp(64px,9vh,88px);display:grid;grid-template-columns:repeat(12,1fr);column-gap:clamp(12px,2vw,32px);align-content:center;position:relative}
+.pg>*{grid-column:1/-1;min-width:0}
+.pg .w8{grid-column:1/span 8}
+.pg .w7{grid-column:1/span 7}
+.pg .w6{grid-column:1/span 6}
+.pg .w5{grid-column:1/span 5}
+.pg .r7{grid-column:6/span 7}
+.pg .r6{grid-column:7/span 6}
+.pg .r5{grid-column:8/span 5}
+.pg .r4{grid-column:9/span 4}
+.pg .c10{grid-column:2/span 10}
+.pg .c8{grid-column:3/span 8}
+
+.ch{font-family:var(--mono);font-size:.62em;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:.7em;margin-bottom:1.6em}
+.ch svg{width:1.1em;height:1.1em;fill:currentColor}
+h1,h2,h3{font-family:var(--display);font-weight:200;letter-spacing:-.01em;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.6rem,7.5vw,7rem)}
+h1 s{text-decoration:line-through;text-decoration-thickness:.06em;text-decoration-color:var(--live);color:var(--mute)}
+h2{font-size:clamp(1.9rem,4.4vw,4rem)}
+h3{font-size:clamp(1.3rem,2.4vw,2.1rem);font-weight:300}
+.lede{font-size:clamp(1.05rem,1.7vw,1.5rem);line-height:1.4;max-width:34ch;color:var(--ink2)}
+.sm{font-size:.82em;color:var(--mute);max-width:52ch}
+.mono{font-family:var(--mono);font-size:.78em;letter-spacing:.02em}
+.stack{display:grid;gap:1.1em}
+.row{display:flex;flex-wrap:wrap;gap:1em 2em;align-items:baseline}
+.caps{font-family:var(--mono);font-size:.66em;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.year{font-family:var(--display);font-weight:200;font-size:clamp(2.4rem,6vw,5.5rem);line-height:1;letter-spacing:-.02em}
+.big{font-family:var(--display);font-weight:200;font-size:clamp(1.5rem,3vw,2.8rem);line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+.hair{border:0;border-top:1px solid var(--line);margin:0}
+
+/* quotes */
+blockquote{margin:0;font-family:var(--display);font-weight:200;font-size:clamp(1.5rem,3.2vw,3rem);line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+blockquote.q2{font-size:clamp(1.3rem,2.6vw,2.4rem)}
+cite{display:block;font-style:normal;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-top:1.4em}
+cite b{font-weight:500;color:var(--fg)}
+
+/* fragments: dim at rest, full on reveal. Everything stays readable. */
+.frag{opacity:0;transition:opacity .35s}
+.frag.on{opacity:1}
+
+/* figures */
+.fig{position:relative;overflow:hidden;background:var(--soft)}
+.fig img{width:100%;height:100%;object-fit:cover}
+.fig.contain img{object-fit:contain;background:#fff}
+.fig.tall{aspect-ratio:3/4}
+.fig.wide{aspect-ratio:16/9}
+.fig.sq{aspect-ratio:1}
+.fig figcaption{position:absolute;left:0;bottom:0;padding:.5em .8em;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;background:var(--bg);color:var(--mute)}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.4vw,20px);align-items:center}
+.strip .fig{aspect-ratio:4/3}
+.strip .arrow{text-align:center;color:var(--mute)}
+
+/* asset slot (content still to supply) */
+.slot{border:1px dashed var(--line);display:grid;place-items:center;text-align:center;padding:1.2em;color:var(--mute);background:transparent}
+.slot svg{width:2.2em;height:2.2em;fill:var(--line);margin-bottom:.6em}
+.slot p{margin:0;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;max-width:26ch;line-height:1.5}
+.slot.wide{aspect-ratio:16/9}
+.slot.sq{aspect-ratio:1}
+
+/* spec sheet */
+.spec{display:grid;grid-template-columns:max-content 1fr;gap:0;border-top:1px solid var(--fg);margin:0}
+.spec dt,.spec dd{margin:0;padding:.75em 0;border-bottom:1px solid var(--line)}
+.spec dt{font-family:var(--mono);font-size:.68em;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding-right:2.5em;padding-top:1.05em}
+.spec dd{font-size:.95em;line-height:1.4}
+.spec dd b{font-weight:500}
+#beforespec .spec dd{font-size:.88em}
+#money .spec dd{font-size:.84em;padding:.5em 0}
+#money .spec dt{padding-top:.85em}
+.scale dd{display:grid;grid-template-columns:auto 1fr;gap:1.2em;align-items:baseline}
+.scale .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.05em;letter-spacing:.02em;white-space:nowrap}
+.scale .eq{color:var(--mute);font-size:.85em;line-height:1.35}
+@media (max-width:820px){.scale dd{grid-template-columns:1fr;gap:.2em}}
+.spec dd.you{font-family:var(--display);font-weight:300;font-size:1.15em}
+.spec-h{display:flex;justify-content:space-between;align-items:baseline;gap:1em;margin-bottom:.6em}
+.spec-h .caps{color:var(--fg)}
+
+/* two-column contrast */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,48px)}
+.vs>div{border-top:1px solid var(--fg);padding-top:1em}
+.vs ul{margin:.6em 0 0;padding:0;list-style:none;display:grid;gap:.45em}
+.vs li{padding-left:1.1em;text-indent:-1.1em}
+.vs li::before{content:"";display:inline-block;width:.45em;height:.45em;background:currentColor;margin-right:.65em;vertical-align:middle;border-radius:50%}
+.vs .ai li::before{border-radius:0}
+
+/* theft table */
+.theft{width:100%;border-collapse:collapse;font-size:.95em}
+.theft th{font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:.12em;text-transform:uppercase;text-align:left;padding:.6em 0;border-bottom:1px solid var(--fg)}
+.theft td{padding:.55em 0;border-bottom:1px solid var(--line);width:50%}
+.theft td:first-child{padding-right:2em}
+
+/* lists */
+ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:.5em}
+ul.plain li{padding-left:1.2em;position:relative}
+ul.plain li::before{content:"";position:absolute;left:0;top:.55em;width:.5em;height:.5em;background:currentColor;border-radius:50%}
+ul.plain.grid2{display:block;columns:2;column-gap:2.5em}
+ul.plain.grid2 li{break-inside:avoid;margin:0 0 .45em}
+
+/* live tag */
+.live-tag{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--live)}
+.live-tag::before{content:"";width:.6em;height:.6em;border-radius:50%;background:var(--live);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* spec/diamond art */
+.art svg{width:100%;height:auto;display:block}
+.art text{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;fill:var(--mute)}
+.art .lbl{fill:var(--fg)}
+.art .ink{fill:var(--fg)}
+.art .ln{stroke:var(--fg);fill:none;stroke-width:1.2}
+.art .faint{stroke:var(--line);fill:none;stroke-width:1}
+.art .wash{fill:var(--soft)}
+.art .paper{fill:var(--bg);stroke:var(--fg);stroke-width:1.2}
+.art .cjk,.art .cjk text{font-family:"Noto Sans TC","Noto Sans SC","PingFang TC","PingFang SC","Microsoft JhengHei","Microsoft YaHei",sans-serif;font-size:11.5px;letter-spacing:0;text-transform:none;fill:var(--fg)}
+
+/* demos */
+.demo{border:1px solid var(--line);padding:1.1em 1.2em;display:grid;gap:.9em}
+.demo .caps{margin:0}
+.bars{display:grid;gap:.45em;font-family:var(--mono);font-size:.8em}
+.bars div{display:grid;grid-template-columns:10em 1fr 3em;gap:.8em;align-items:center}
+.bars i{display:block;height:.9em;background:var(--fg);transform-origin:left;}
+.bars span:last-child{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.noise{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--soft)}
+.noise img,.noise canvas{position:absolute;inset:0;width:100%;height:100%}
+.noise img{object-fit:cover}
+input[type=range]{width:100%;accent-color:var(--fg)}
+
+
+/* paint match demo */
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.swatches .sw{aspect-ratio:16/9;border:1px solid var(--line);transition:background .25s;display:grid;place-items:center}
+.swatches .sw.hidden{background:repeating-linear-gradient(45deg,var(--soft) 0 10px,var(--bg) 10px 20px)!important;color:var(--fg);font-family:var(--mono);font-size:clamp(1.6rem,3.2vw,3rem);font-weight:500;font-variant-numeric:tabular-nums}
+.swatches .sw span{display:none}.swatches .sw.hidden span{display:block}
+.ask{display:flex;gap:1em;align-items:baseline}
+.ask p{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1.6rem,3vw,2.6rem);line-height:1}
+.errbig{font-family:var(--mono);font-size:1.1em;font-variant-numeric:tabular-nums}
+.swatches .caps{margin:.5em 0 0}
+.knobs{display:grid;gap:.5em;font-family:var(--mono);font-size:.74em}
+.knobs div{display:grid;grid-template-columns:4em auto 1fr auto 3em;gap:.7em;align-items:center}
+.knobs button{font-family:var(--mono);font-size:.9em;padding:.25em .7em}
+.knobs.revealed .track em{visibility:visible}
+.knobs .track em{visibility:hidden}
+.knobs .track{height:.5em;background:var(--soft);position:relative}
+.knobs .track i{position:absolute;left:0;top:0;bottom:0;background:var(--fg);transition:width .25s}
+.knobs .track em{position:absolute;top:-.35em;width:2px;height:1.2em;background:var(--live)}
+.knobs b{font-weight:400;text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.trail{display:flex;gap:3px;flex-wrap:wrap;min-height:16px}
+.trail i{width:16px;height:16px;display:block}
+/* thai fill-in */
+.thai{font-family:"Noto Sans Thai",var(--body);display:grid;gap:.5em}
+.thai .line{margin:0;font-size:clamp(1.15rem,2.2vw,2rem);font-weight:300;line-height:1.45}
+.thai .blank{opacity:1}
+.thai .blank u{text-decoration:none;border-bottom:2px solid var(--live);color:transparent;letter-spacing:.2em}
+.thai .blank b{display:none;font-weight:400;border-bottom:2px solid var(--fg)}
+.thai .blank.on u{display:none}
+.thai .blank.on b{display:inline}
+
+
+/* title shapes */
+.shapes{display:flex;gap:6%;align-items:end;justify-content:end}
+.shapes svg{width:18%;height:auto;aspect-ratio:1;fill:var(--fg)}
+/* costume: wall of weights behind a chat card */
+.costume{position:relative;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--line);background:var(--soft)}
+.costume pre{margin:0;position:absolute;inset:0;padding:10px;font-family:var(--mono);font-size:8.5px;line-height:1.35;color:var(--mute);opacity:.75;white-space:pre;overflow:hidden}
+.costume .card{position:absolute;left:12%;right:12%;top:50%;transform:translateY(-50%);background:var(--bg);border:1px solid var(--fg);padding:1.1em 1.3em;display:flex;gap:.9em;align-items:center;box-shadow:0 18px 50px -24px rgba(0,0,0,.45)}
+.costume .card p{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1rem,1.6vw,1.45rem)}
+.costume .dot{width:.9em;height:.9em;border-radius:50%;background:var(--live);flex:none}
+.costume .cursor{width:2px;height:1.2em;background:var(--fg);margin-left:auto;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* three-era mocks */
+.mocks{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.6vw,22px)}
+.mock{border:1px solid var(--line);padding:1em 1.1em;min-height:9.5em;display:grid;align-content:start;gap:.6em;background:var(--soft)}
+.mock .caps{margin:0}
+.mock .ink{margin:0;font-family:"Caveat",var(--display);font-size:1.15em;line-height:1.35;color:var(--ink2)}
+.mock .box{border:1px solid var(--line);background:var(--bg);padding:.7em .9em;font-size:.9em;line-height:1.35;border-radius:999px}
+.mock.chat .box{border-radius:6px;min-height:4.4em}
+/* portraits from Commons: unify as grayscale squares */
+.port{width:clamp(72px,8vw,120px);aspect-ratio:1;object-fit:cover;filter:grayscale(1) contrast(1.05);border-radius:2px}
+.port-row{display:flex;gap:1em;align-items:center}
+
+/* credits */
+.credits{margin:0;padding:0 0 0 1.2em;columns:3;column-gap:2.4em;font-size:.56em;line-height:1.4;color:var(--mute)}
+#credits{padding-bottom:140px}
+.credits li{break-inside:avoid;margin:0 0 .35em}
+.credits a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+@media (max-width:820px){.credits{columns:1}}
+/* ARC */
+.arc-row{display:flex;flex-wrap:wrap;gap:.9em 1.4em;align-items:center;padding:.8em 0;border-top:1px solid var(--line)}
+.arc-row .pair{display:flex;align-items:center;gap:.45em}
+.arc-row .pair span{font-family:var(--mono);color:var(--mute);font-size:.8em}
+.arc-row .pair.test{padding-left:1em;border-left:1px dashed var(--line)}
+.chigrid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:2px;width:100%;height:100%}
+.chigrid img{width:100%;height:100%;object-fit:cover;display:block}
+.qwrap{display:flex;gap:1.6em;align-items:flex-start}
+.qwrap .port{flex:none;margin-top:.4em}
+@media (max-width:820px){.qwrap{flex-direction:column}}
+/* mirror pages */
+.mirror svg{display:block;width:100%;height:auto;max-height:62vh;margin:0 auto}
+.mirror .mtext{font-family:var(--display);font-weight:300;font-size:24px;fill:var(--fg)}
+.th{font-family:"Noto Sans Thai",var(--body)}
+.hot{font-family:var(--display);font-weight:200;font-size:clamp(4rem,13vw,11rem);line-height:1;margin:0;letter-spacing:-.02em}
+.hot.th{font-weight:300}
+.asks .big{font-size:clamp(2rem,4.6vw,4.2rem)}
+.uses{gap:.55em}
+.uses p{margin:0}
+.uses .big{font-size:clamp(1.4rem,2.7vw,2.5rem);line-height:1.15}
+/* old ads */
+.ads{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.4vw,20px)}
+.ad{margin:0;min-width:0;display:grid;grid-template-rows:auto 1fr;gap:.7em;border:1px solid var(--line);padding:.75em;background:var(--soft)}
+.ad img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#fff;display:block}
+.ad .adtext{aspect-ratio:4/3;background:var(--bg);border:1px solid var(--line);padding:.9em;display:grid;place-items:center}
+.ad .adtext p{margin:0;font-size:.7em;line-height:1.35;color:var(--ink2)}
+.ad .badge p{font-family:var(--mono);font-weight:500;font-size:1.7em;line-height:1.05;letter-spacing:.1em;text-align:center;color:var(--fg)}
+.ad .badge sup{font-size:.4em;vertical-align:top}
+.ad figcaption{display:grid;gap:.35em;font-size:.72em;line-height:1.35;align-content:start}
+.ad figcaption b{font-family:var(--mono);font-weight:500;font-size:.85em;letter-spacing:.08em;text-transform:uppercase}
+.ad figcaption q{quotes:"\201C" "\201D";font-style:italic;color:var(--ink2)}
+.ad figcaption span{color:var(--mute)}
+@media (max-width:820px){.ads{grid-template-columns:1fr 1fr}}
+/* next-word generator */
+.genlines{display:grid;gap:.9em}
+.gl{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1.05rem,1.8vw,1.55rem);line-height:1.35}
+.gl.th,.gl.th .out{font-family:"Noto Sans Thai",var(--display)}
+.gl mark{background:var(--soft);color:var(--fg);padding:.02em .35em;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.gl .out{color:var(--ink2)}
+.gl .cur{display:none;width:2px;height:1em;background:var(--fg);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite}
+.gl.typing .cur{display:inline-block}
+/* picture pages */
+.prompt{margin:0;font-family:var(--mono);font-size:.78em;letter-spacing:.01em;color:var(--ink2)}
+.dstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dstrip figure{margin:0}
+.dstrip .noise{aspect-ratio:16/9}
+.dstrip figcaption,.edgepair figcaption,.refrow figcaption{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:.35em}
+.edgepair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.edgepair figure{margin:0}
+.edgepair img,.edgepair canvas{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#111}
+.cnrow{display:grid;grid-template-columns:1fr auto repeat(5,1fr);gap:6px;align-items:center}
+.cnrow img{width:100%;aspect-ratio:288/388;object-fit:cover;display:block}
+.cnrow span{font-family:var(--mono);color:var(--mute);padding:0 .2em}
+.pairtwo{display:grid;grid-template-columns:1fr auto 1fr;gap:.5em;align-items:center}
+.pairtwo img{width:100%;aspect-ratio:288/388;object-fit:cover;display:block}
+.pairtwo span{font-family:var(--mono);color:var(--mute)}
+.refrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.refrow.four{grid-template-columns:repeat(4,1fr)}
+.refrow.four img{aspect-ratio:16/10}
+.refrow figure{margin:0}
+.refrow img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.refout{display:grid;grid-template-columns:auto 1fr;gap:1em;align-items:center}
+.refout>span{font-family:var(--display);font-weight:200;font-size:2.2em;color:var(--mute);line-height:1}
+.refout .slot{aspect-ratio:16/6}
+.axis-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.axis{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1em;padding-top:22px}
+.axis::before{content:"";position:absolute;left:0;right:0;top:8px;height:1px;background:var(--fg)}
+.axis>div{position:relative;font-size:.8em;line-height:1.3;min-width:0}
+.axis>div::before{content:"";position:absolute;top:-18px;left:0;width:9px;height:9px;border-radius:50%;background:var(--fg)}
+.axis b{display:block;font-weight:500;margin-bottom:.2em}
+.axis span{color:var(--mute)}
+.further{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2em;border-top:1px solid var(--line);padding-top:.8em;font-size:.8em;line-height:1.35}
+.further b{display:block;font-weight:500;margin-bottom:.15em}
+.further span{color:var(--mute)}
+@media (max-width:820px){.axis,.further{grid-template-columns:1fr 1fr}.cnrow{grid-template-columns:repeat(3,1fr)}.cnrow span{display:none}}
+/* notes (speaker) */
+.note{display:none;grid-column:1/-1;margin-top:1.6em;padding-top:.9em;border-top:1px dashed var(--line);font-size:.78em;color:var(--mute);max-width:70ch}
+.note b{color:var(--fg);font-weight:500}
+body.notes .note{display:block}
+
+/* rail + hud */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);display:grid;gap:9px;z-index:5}
+.rail a{width:10px;height:10px;display:block;color:var(--line);transition:color .3s}
+.rail a svg{width:100%;height:100%;fill:currentColor}
+.rail a.on{color:var(--fg)}
+.rail a span{position:absolute;left:1.4em;top:-.35em;white-space:nowrap;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);opacity:0;pointer-events:none;transition:opacity .2s}
+.rail a{position:relative}
+.rail a:hover span{opacity:1}
+.hud{position:fixed;right:var(--gutter);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;gap:1.4em;align-items:center;font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-variant-numeric:tabular-nums}
+.hud button{border:0;padding:0;color:var(--mute);letter-spacing:inherit;font-size:inherit;text-transform:inherit}
+.hud button:hover{color:var(--fg)}
+.brand{position:fixed;left:var(--gutter);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5;height:16px;opacity:.75}
+.brand img{height:100%;width:auto}
+.index{position:fixed;inset:0;background:var(--bg);z-index:20;overflow:auto;padding:clamp(40px,8vh,80px) var(--gutter)}
+.index ol{list-style:none;margin:0;padding:0;columns:2;column-gap:3em}
+.index li{break-inside:avoid;margin:0 0 .6em}
+.index a{text-decoration:none;font-family:var(--display);font-weight:300;font-size:clamp(1.2rem,2.2vw,1.9rem);display:flex;gap:.7em;align-items:center}
+.index a svg{width:.7em;height:.7em;fill:var(--fg);flex:none}
+.index a small{font-family:var(--mono);font-size:.55em;letter-spacing:.1em;color:var(--mute);margin-left:auto}
+.index .close{position:absolute;right:var(--gutter);top:24px}
+.kbd{display:grid;grid-template-columns:auto 1fr;gap:.4em 1.4em;font-family:var(--mono);font-size:.7rem;color:var(--mute);margin-top:2.5em;max-width:40ch}
+.kbd b{font-weight:500;color:var(--fg)}
+
+/* phone: plain page */
+@media (max-width:820px){
+  #deck{height:auto;scroll-snap-type:none;overflow:visible}
+  .pg{min-height:0;padding:56px var(--gutter) 40px;display:grid;grid-template-columns:1fr;gap:1em;border-bottom:1px solid var(--line)}
+  .pg>*{grid-column:auto!important}
+  .frag{opacity:1}
+  .rail,.hud{display:none}
+  .brand{position:static;display:block;height:14px;margin:18px var(--gutter) 0;opacity:.7}
+  .brand img{height:14px;width:auto}
+  .vs,.vote,.strip,.mocks{grid-template-columns:1fr}
+  ul.grid2{columns:1}
+  .spec{grid-template-columns:1fr}
+  .spec dt{padding-bottom:0;border-bottom:0;padding-top:.9em}
+  .spec dd{padding-top:.25em}
+  .index ol{columns:1}
+  .thai .blank u{display:none}
+  .thai .blank b{display:inline}
+  .hud{display:flex;right:16px;gap:1em}
+  #counter{display:none}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="s-square" viewBox="1452 145 304 304"><path d="M 1469.996094 432.585938 L 1741.273438 432.585938 L 1741.273438 159.96875 L 1467.453125 159.96875 C 1467.453125 216.234375 1467.140625 270.050781 1467.5625 323.863281 C 1467.84375 360.285156 1469.15625 396.703125 1469.996094 432.585938 "/></symbol>
+  <symbol id="s-blob" viewBox="1024 136 334 334"><path d="M 1035.707031 283.546875 C 1033.542969 331.050781 1053.425781 357.3125 1091.84375 365.402344 C 1136.21875 374.746094 1174.808594 397.140625 1214.058594 418.207031 C 1239.621094 431.925781 1266.222656 425.035156 1280.378906 400.734375 C 1285.234375 392.398438 1288.800781 383.261719 1292.460938 374.289062 C 1308.285156 335.511719 1324.84375 297 1339.289062 257.714844 C 1348.25 233.355469 1344.167969 208.988281 1329.695312 187.160156 C 1320.789062 173.71875 1308.433594 167.320312 1291.539062 170.042969 C 1242.351562 177.960938 1194.148438 176.324219 1145.773438 161.214844 C 1096.992188 145.980469 1060.789062 168.554688 1048.839844 218.058594 C 1042.960938 242.402344 1038.9375 267.195312 1035.707031 283.546875 "/></symbol>
+  <symbol id="s-arch" viewBox="622 134 304 304"><path id="archpath" d=""/></symbol>
+  <symbol id="s-circle" viewBox="206 160 304 304"><path id="circlepath" d=""/></symbol>
+</svg>
+
+<nav class="rail" id="rail" aria-label="Chapters"></nav>
+<a class="brand" href="#top" aria-label="Fig n Table"><img decoding="async" src="fnt-logo.svg" alt="Fig n Table"></a>
+<div class="hud"><button id="idxBtn" type="button">Index</button><button id="noteBtn" type="button">Notes</button><span id="counter">1 / 1</span></div>
+
+<div class="index" id="index" hidden>
+  <button class="close" type="button" id="idxClose">Close</button>
+  <p class="caps">AI as Material · chapters</p>
+  <ol id="indexList"></ol>
+  <div class="kbd">
+    <b>↓ ↑ space</b><span>next, previous page</span>
+    <b>→</b><span>reveal next line, then next page</span>
+    <b>n</b><span>speaker notes</span>
+    <b>i</b><span>this index</span>
+    <b>f</b><span>fullscreen</span>
+  </div>
+</div>
+
+<main id="deck">
+
+<section class="pg" id="top" data-ch="Start" data-shape="">
+  <div class="w8 stack">
+    <p class="caps">Computer for Interior Design II · year 3 · guest lecture</p>
+    <h1>AI as <s>tools</s> material</h1>
+    <p class="lede">Before you build with anything, you learn what it's made of, how it behaves, and where it breaks. Same rule here.</p>
+  </div>
+  <div class="r4 shapes" style="align-self:end" aria-hidden="true"><svg><use href="#s-circle"/></svg><svg><use href="#s-arch"/></svg><svg><use href="#s-blob"/></svg><svg><use href="#s-square"/></svg></div>
+  <aside class="note"><b>Beat.</b> Open on the title. One line: last time was a talk, this time it's a unit. You'll be examined on your judgment, not on the tool.</aside>
+</section>
+
+<section class="pg" id="y2014" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2014</p><p class="sm">The first generative adversarial network. Digits, faces, a blur that might be a bird.</p></div>
+  <figure class="fig r6 contain wide"><img decoding="async" src="img/new/papers/gan2014.jpg" alt="Grid of blurry generated digits, faces and small images from the 2014 GAN paper"></figure>
+  <aside class="note">Don't explain GANs. "A computer drew these. People were very excited." Flip through the years fast, five seconds each. The point is the slope, not any one picture.</aside>
+</section>
+
+<section class="pg" id="y2015" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2015</p><p class="sm">The first AI bedrooms. 64 pixels wide. Nobody would put this on a mood board.</p></div>
+  <figure class="fig r6 wide"><img decoding="async" src="img/new/papers/dcgan2015.jpg" alt="Grid of small blurry generated bedrooms from the 2015 DCGAN paper"></figure>
+</section>
+
+<section class="pg" id="y2017" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2017</p><p class="sm">128 pixels. The paper called these "at least comparable to the best published results."</p></div>
+  <figure class="fig r6 wide"><img decoding="async" src="img/new/papers/wgangp2017.jpg" alt="Grid of generated bedrooms at 128 pixels from a 2017 paper"></figure>
+</section>
+
+<section class="pg" id="y2019" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2019</p><p class="sm">256 pixels. Some of these would pass at thumbnail size. Look closer and the furniture melts.</p></div>
+  <figure class="fig r6 wide"><img decoding="async" src="img/new/papers/stylegan2019.jpg" alt="Grid of generated bedrooms at 256 pixels from the 2019 StyleGAN paper"></figure>
+</section>
+
+<section class="pg" id="y2021" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2021</p><p class="sm">Type a sentence, get a picture. Top row: real photos with their captions. Second row: what the model drew from the same captions.</p></div>
+  <figure class="fig r6 contain wide"><img decoding="async" src="img/new/papers/dalle2021-pairs.jpg" alt="Eight captions with a real photo and a generated image under each, from the 2021 DALL-E paper"></figure>
+</section>
+
+<section class="pg" id="y2022" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2022</p><p class="sm">Stable Diffusion. Open, free, runs on a laptop. "A chair that looks like an octopus." Designers noticed.</p></div>
+  <figure class="fig r6 contain wide"><img decoding="async" src="img/new/papers/ldm2022-t2i.jpg" alt="Text-to-image samples from the 2022 latent diffusion paper, including a chair that looks like an octopus"></figure>
+</section>
+
+<section class="pg" id="y2023" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2023</p><p class="sm">Midjourney. Photoreal, cinematic, a mountain through a curved window. Every render on Instagram starts to look like this.</p></div>
+  <figure class="fig r6 wide"><img decoding="async" src="img/new/ai/ai-2023-midjourney.jpg" alt="AI-generated living room with a curved panoramic window onto mountains, leather sofa and glass table"></figure>
+</section>
+
+<section class="pg" id="y2025" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2025</p><p class="sm">People, hands, reflections, chandeliers. Nothing left to point at. You cannot tell.</p></div>
+  <figure class="fig r6 wide"><img decoding="async" src="img/new/ai/ai-2025-nanobanana-pro.jpg" alt="AI-generated photo of a waiter in a wood-panelled tea room with chandeliers"></figure>
+</section>
+
+<section class="pg" id="y2026" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack">
+    <p class="year">2026</p>
+    <p class="sm">Video. One reference image, one prompt. Cuts, reflections, a score. A finished interior ad in fifteen seconds. The kind of thing you'd love to render and can't.</p>
+    <p class="big frag">That was one year.</p>
+    <p class="big frag">And it's a walk through a room nobody checked.</p>
+  </div>
+  <figure class="fig r6 wide" style="align-self:center"><video src="img/new/video/kling-interior.mp4" muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;display:block" aria-label="AI-generated cinematic interior advertisement of a cream, black and gold living room, Kling 4.0 Flash, 2026"></video><figcaption>Kling 4.0 Flash · one reference image · 15 s · Everett World, 2026</figcaption></figure>
+  <aside class="note"><b>Clip:</b> posted on X by Everett World (@WorldEverett), September 2026, made with Kling 4.0 Flash from a single reference image of the living room, prompt asked for a luxury interior ad with multishot cuts and no people. Not a free licence: credited on the sources page, keep the credit if you share. <b>Two reveals.</b> First one lands the speed. Second one is the hook for the whole unit: the room looks real and nobody knows if it stands up. Leave it hanging. Don't explain yet.</aside>
+</section>
+
+<section class="pg" id="y2028" data-ch="One year" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>One year</p>
+  <div class="w5 stack"><p class="year">2028</p><p class="sm">You graduate, probably. Nobody has the picture for this page yet.</p><p class="big frag">Good luck. Have fun.</p></div>
+  <div class="slot r6 wide" style="align-self:center"><div><svg><use href="#s-circle"/></svg><p>this page renders itself in 2028</p></div></div>
+  <aside class="note">Leave it empty. The dashed box is the point. Then straight to the brick: if you can't know what's coming, learn the material.</aside>
+</section>
+
+<section class="pg" id="brick" data-ch="Ask the brick" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Ask the brick</p>
+  <div class="w7 qwrap"><img decoding="async" class="port" src="img/new/commons/kahn.jpg" alt="Louis Kahn in 1967, black and white"><blockquote>You say to a brick, "What do you want, brick?" And brick says to you, "I like an arch."
+    <cite><b>Louis Kahn</b> · master class, University of Pennsylvania, 1971</cite>
+  </blockquote></div>
+  <figure class="fig r5 wide" style="align-self:center"><img decoding="async" src="img/new/commons/kimbell.jpg" alt="Kimbell Art Museum gallery: a concrete cycloid vault lit by a slit of daylight"><figcaption>Kimbell Art Museum · Kahn · 1972</figcaption></figure>
+  <aside class="note"><b>Kahn in one breath:</b> Salk Institute, Kimbell Art Museum, the parliament in Dhaka. Kimbell is the daylight building, they should know it. He meant this literally. The material has preferences, your job is to listen before you draw. Fun bit if you want it: died broke in a Penn Station bathroom, body unidentified for two days, three families who didn't know about each other, his son made a film trying to find out who he was.</aside>
+</section>
+
+<section class="pg" id="material" data-ch="Ask the brick" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Ask the brick</p>
+  <div class="w6 stack">
+    <h2>Every material has a datasheet.</h2>
+    <p class="lede">Veneer: cheap, flexible, not waterproof. You don't argue with that. You design around it.</p>
+  </div>
+  <dl class="spec r5" style="align-self:center">
+    <dt>Source</dt><dd>where it comes from</dd>
+    <dt>Process</dt><dd>how it was made</dd>
+    <dt>Grain</dt><dd>how it behaves</dd>
+    <dt>Fails like</dt><dd>how it breaks</dd>
+    <dt>Honesty</dt><dd>what it should not pretend to be</dd>
+  </dl>
+  <aside class="note">The frame for everything after this. We're going to fill this sheet in for AI. Twice, because there are two different materials people call "AI."</aside>
+</section>
+
+<section class="pg" id="beforespec" data-ch="Ask the brick" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Ask the brick · before the datasheet</p>
+  <div class="w5 stack">
+    <h2>We built with wood for ten thousand years before anyone wrote the spec.</h2>
+    <p class="lede">The hazard rows got written afterwards. Usually by whoever got hurt.</p>
+    <p class="big frag">This material is four years old.</p>
+    <p class="sm frag">Also: teak and pine are both "wood." Two things are called "AI." We'll need two datasheets.</p>
+  </div>
+  <dl class="spec r7" style="align-self:center">
+    <dt>1830s</dt><dd><b>Balloon framing.</b> Fast, cheap, built Chicago. Every wall cavity a chimney. Fire-stopping only became code a century later.</dd>
+    <dt>1965–73</dt><dd><b>Aluminium wiring.</b> Copper got expensive, so two million American homes were wired in aluminium. The joints loosen and arc. Fifty-five times the fire hazard. The standard changed in 1972.</dd>
+    <dt>1970s–2003</dt><dd><b>Arsenic-treated timber.</b> Rot-proof decking and playgrounds for thirty years. Phased out when the arsenic turned out to leach into children's hands.</dd>
+    <dt>today</dt><dd><b>Treated utility poles.</b> Dirt and rain on an insulator let current leak into the wood until it smoulders. The preservative that stops rot helps it burn.</dd>
+  </dl>
+  <aside class="note">Each of these worked. Each shipped. The hazard row came later. Nobody lied; they just hadn't asked the question yet. The aluminium one is the "American electrical disaster" half-remembered in most tellings. <b>Your own story goes here</b>, if you want it: a material you found, packed, shipped, and only then understood. It's the most honest page in the room if you tell it. Then the bridge: this material is four years old and we're writing its sheet live. And the teak/pine line sets up the two spec sheets, V1 and V2.</aside>
+</section>
+
+<section class="pg" id="whatwant" data-ch="Ask the brick" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Ask the brick</p>
+  <div class="w6 stack">
+    <h2>So. What does this material want to be?</h2>
+    <p class="big frag">We'll come back to that.</p>
+  </div>
+  <figure class="fig r6 wide" style="align-self:center"><img decoding="async" src="img/new/commons/salk.jpg" alt="Salk Institute plaza at sunset, the water channel running toward the ocean"><figcaption>Salk Institute · Kahn · 1965</figcaption></figure>
+  <aside class="note">Rhetorical. The answer is "the average," and it arrives in the spec sheet section. Plant it here.</aside>
+</section>
+
+<section class="pg" id="ambition" data-ch="Ambition" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Ambition</p>
+  <div class="w6 stack">
+    <p class="lede">Brick, because we wanted things to stand. Veneer, because we wanted things to look. Every material is a want.</p>
+    <h1>Ambition.</h1>
+    <p class="sm">So what did we want from this one?</p>
+  </div>
+  <div class="r5 stack asks" style="align-self:center">
+    <p class="big frag">Smart?</p>
+    <p class="big frag">Serves us?</p>
+    <p class="big frag">Like us?</p>
+    <p class="big frag">…</p>
+  </div>
+  <aside class="note"><b>Talk the examples in passing, pick two or three.</b> Homer's golden handmaidens, gold with "intelligence in their hearts, and voice" · Yan Shi's wooden man in the Liezi, sang and winked at the king's concubines, opened up it was leather and glue (costume page) · the Brazen Head, 1200s, answered any question · กุมารทอง, a made child that scouts and protects · the homunculus, Paracelsus, a little man in a flask (Fullmetal Alchemist for this room) · the Mechanical Turk, 1770, beat Napoleon, a man inside (Amazon named its labelling marketplace after it, the rater page) · Frankenstein's creature learned to speak through a wall and to think from three books (scrape page) · Doraemon · ELIZA, HAL, Siri, ChatGPT. Talos, the Golem and หุ่นพยนต์ are muscle, not minds: a different wish. "Like us?" is the bridge to Turing on the next page but one.</aside>
+</section>
+
+<section class="pg" id="artificial" data-ch="Ambition" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Ambition</p>
+  <div class="w6 stack" style="align-self:center">
+    <p class="caps">adjective</p>
+    <h2 style="font-weight:300">artificial</h2>
+    <p class="lede">Made by craft. By someone. For something.</p>
+    <p class="sm">You make artificial things for a living. So do they. The difference is what each of you is trying to make.</p>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <p class="big frag">That word we understand.</p>
+    <p class="big frag">The other one?</p>
+    <h2 class="frag" style="font-weight:300">intelligence</h2>
+  </div>
+  <aside class="note">Artificial is the easy half: built by someone, so ask who and for what, which is the spec sheet later. Intelligence is the hard half, and the next chapter fails to define it on purpose.</aside>
+</section>
+
+<section class="pg" id="turing" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence</p>
+  <div class="w6 stack">
+    <p class="caps">1950</p>
+    <div class="qwrap"><img decoding="async" class="port" src="img/new/commons/turing.jpg" alt="Alan Turing, 1951 portrait"><blockquote class="q2">I propose to consider the question, "Can machines think?"<cite><b>Alan Turing</b> · Computing Machinery and Intelligence</cite></blockquote></div>
+    <p>Then he gave up on the question and swapped in a game. If you can't tell it from a person in conversation, it counts.</p>
+  </div>
+  <div class="r6 stack">
+    <p class="caps">1966</p>
+    <figure class="fig wide contain"><img decoding="async" src="img/new/commons/eliza.jpg" alt="Terminal transcript of a conversation with ELIZA, the 1966 chatbot"></figure>
+    <p class="sm">ELIZA matched patterns and turned your sentence back into a question. Its creator's secretary asked him to leave the room so she could talk to it in private. He had built it to show how shallow the trick was. It did the opposite.</p>
+  </div>
+  <p class="big frag">If it acts like us, we call it intelligent. We're a modest species.</p>
+  <p class="big frag">Behavior is the test. Is that enough?</p>
+  <aside class="note"><b>Turing and anthropomorphism in one breath.</b> The test says "acts like a person," and we are built to see persons everywhere: Peter Rabbit, your car, the chat window. So the test is easy to pass and says as much about the judge as the machine. <b>ELIZA, told slowly:</b> 1966, MIT, Joseph Weizenbaum. Named after Eliza Doolittle, who passes by imitation. The therapist script was a dodge: a Rogerian therapist may know nothing and ask everything, so the emptiness went unnoticed. "I feel tired" → "Why do you feel tired?" His secretary watched him build it for months, knew exactly what it was, and after a few exchanges asked him to leave the room. He wrote in 1976 that he hadn't realised "extremely short exposures to a relatively simple computer program could induce powerful delusional thinking in quite normal people." Psychiatrists proposed using it on patients; he spent the rest of his life arguing some things shouldn't be automated even if they can be. <b>Then and now:</b> Her, 2013. Replika and Character.AI, millions of daily users. August 2025: OpenAI retires GPT-4o and the outcry from people attached to its voice brings it back within a day. Sixty years, same request: don't leave the room. <b>For this room:</b> the trick worked because listening, even fake listening, is rare. The model is the best fake listener ever built. Real listening is the job, and it comes back as "discover the actual context." Let them say "not enough" to Turing.</aside>
+</section>
+
+<section class="pg" id="camps" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · two camps</p>
+  <div class="w6 stack">
+    <div class="strip"><figure class="fig"><img decoding="async" src="img/new/commons/altman.jpg" alt="Sam Altman seated on a stage" style="object-position:top"></figure><figure class="fig"><img decoding="async" src="img/new/commons/huang.jpg" alt="Jensen Huang speaking at a lectern"></figure><figure class="fig"><img decoding="async" src="img/new/commons/zuckerberg.jpg" alt="Mark Zuckerberg portrait" style="object-position:top"></figure></div>
+    <blockquote class="q2">I'm not sure what it is. But it serves me well. I want it to serve me better.</blockquote>
+    <p class="sm">Camp one. Most of the industry. Most of this room, honestly.</p>
+  </div>
+  <div class="r5 stack">
+    <figure class="fig" style="aspect-ratio:4/3"><img decoding="async" src="img/new/commons/thinker.jpg" alt="Rodin's The Thinker against a blue sky" style="object-position:center top"></figure>
+    <blockquote class="q2">I want real intelligence.</blockquote>
+    <p class="sm">Camp two. Then you need a definition. Nobody has one.</p>
+  </div>
+  <p class="big frag">Build like camp one. Doubt like camp two.</p>
+  <aside class="note">Both camps are in this room. Camp one ships. Camp two keeps camp one honest. Camp two's problem is that every definition so far has a hole in it, which is the next three pages.</aside>
+</section>
+
+<section class="pg" id="searle" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence</p>
+  <div class="w6 stack">
+    <div class="row" style="align-items:center;gap:1em"><img decoding="async" class="port" src="img/new/commons/searle.jpg" alt="John Searle speaking in 2015" style="width:clamp(56px,5vw,80px)"><p class="caps" style="margin:0">1980 · John Searle</p></div>
+    <h2>The Chinese Room</h2>
+    <p>A person who reads no Chinese sits in a room with a rulebook. Notes in Chinese come under the door. They look up the symbols, follow the rules, pass a reply back out.</p>
+    <p>From outside, the room speaks fluent Chinese.</p>
+    <p class="big frag">Does anyone in there understand Chinese?</p>
+  </div>
+  <div class="art r6" style="align-self:center">
+    <svg viewBox="0 0 420 280" role="img" aria-label="The Chinese Room: a note in Chinese slides in through a slot, a person who reads no Chinese looks it up in a rulebook of symbol pairs, and a reply in Chinese slides out">
+      <text x="210" y="22" text-anchor="middle">the room passes the test</text>
+      <path d="M80 40 H340 V138 M340 162 V240 H80 V162 M80 138 V40" class="ln"/>
+      <rect x="12" y="130" width="56" height="30" rx="2" class="paper"/>
+      <text x="40" y="150" text-anchor="middle" class="cjk">你好嗎？</text>
+      <path d="M68 150 H88" class="ln"/><path d="M82 144 l6 6 -6 6" class="ln"/>
+      <text x="40" y="178" text-anchor="middle">note in</text>
+      <circle cx="128" cy="150" r="13" class="ink"/>
+      <text x="128" y="182" text-anchor="middle">person</text>
+      <text x="128" y="194" text-anchor="middle">no Chinese</text>
+      <path d="M141 150 H185" class="ln" stroke-dasharray="3 4"/>
+      <text x="250" y="80" text-anchor="middle">rulebook</text>
+      <rect x="185" y="88" width="130" height="124" class="wash"/><rect x="185" y="88" width="130" height="124" class="ln"/>
+      <g class="cjk">
+        <text x="197" y="113">你好嗎 → 我很好</text>
+        <text x="197" y="135">天氣如何 → 很熱</text>
+        <text x="197" y="157">謝謝 → 不客氣</text>
+        <text x="197" y="179">再見 → 再見</text>
+        <text x="197" y="201">… → …</text>
+      </g>
+      <path d="M315 150 H352" class="ln"/><path d="M346 144 l6 6 -6 6" class="ln"/>
+      <rect x="352" y="130" width="56" height="30" rx="2" class="paper"/>
+      <text x="380" y="150" text-anchor="middle" class="cjk">我很好。</text>
+      <text x="380" y="178" text-anchor="middle">note out</text>
+    </svg>
+  </div>
+  <aside class="note"><b>Page one of two.</b> Tell it as a story, not a thought experiment. Then: forty-five years of philosophers and nobody agrees whether the room understands. So this is not enough either.</aside>
+</section>
+
+<section class="pg" id="meat" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence</p>
+  <div class="art w6" style="align-self:center">
+    <svg viewBox="0 0 420 280" role="img" aria-label="The same room: a brief slides in, you paste it into a model, a render slides out">
+      <text x="210" y="22" text-anchor="middle">the room passes the crit</text>
+      <path d="M80 40 H340 V138 M340 162 V240 H80 V162 M80 138 V40" class="ln"/>
+      <rect x="12" y="130" width="56" height="30" rx="2" class="paper"/>
+      <text x="40" y="149" text-anchor="middle" class="lbl">brief</text>
+      <path d="M68 150 H88" class="ln"/><path d="M82 144 l6 6 -6 6" class="ln"/>
+      <text x="40" y="178" text-anchor="middle">the client</text>
+      <circle cx="128" cy="150" r="13" class="ln"/>
+      <text x="128" y="182" text-anchor="middle">you</text>
+      <text x="128" y="194" text-anchor="middle">paste it in</text>
+      <path d="M141 150 H185" class="ln" stroke-dasharray="3 4"/>
+      <rect x="185" y="88" width="130" height="124" class="ink"/>
+      <text x="250" y="154" text-anchor="middle" style="fill:var(--bg)">model</text>
+      <path d="M315 150 H352" class="ln"/><path d="M346 144 l6 6 -6 6" class="ln"/>
+      <rect x="352" y="130" width="56" height="30" rx="2" class="paper"/>
+      <text x="380" y="149" text-anchor="middle" class="lbl">render</text>
+      <text x="380" y="178" text-anchor="middle">the crit</text>
+    </svg>
+  </div>
+  <div class="r6 stack">
+    <p class="caps">now flip it</p>
+    <h2>Meat proxy.</h2>
+    <p>Brief comes in. You paste it into the box. Something comes out. You put it in the presentation.</p>
+    <p class="big frag">Who in the room understood the brief?</p>
+  </div>
+  <aside class="note"><b>Page two of two.</b> The jab. Don't soften it. Pause after the question. Then move on without resolving it, the resolution is in the taste section.</aside>
+</section>
+
+<section class="pg" id="chollet" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence</p>
+  <div class="w6 stack">
+    <p class="caps">2019 · François Chollet</p>
+    <h2>Intelligence isn't skill. It's how fast you get skill.</h2>
+    <p>A model that has seen a million bedrooms is skilled at bedrooms. Show it a puzzle it has never seen and watch what happens.</p>
+    <p class="big frag">It renders beautifully. It can't count the chairs.</p>
+  </div>
+  <div class="r5 stack arc" id="arc" style="align-self:center">
+    <p class="caps">two ARC puzzles · a child solves these</p>
+  </div>
+  <aside class="note">The grids are real ARC tasks (Chollet's benchmark), drawn live. Ask the room for the rule on each: shift down one row; rotate 180 degrees. Takes them ten seconds. Models struggled for years because nothing on the internet looks exactly like this. Memorized skill is not the same as being able to learn.</aside>
+</section>
+
+<section class="pg" id="fire" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · but is it, though?</p>
+  <div class="w6 stack" style="align-self:center">
+    <p class="caps">you</p>
+    <p class="hot th">ร้อน</p>
+    <p class="sm">Learned once. By touching the stove.</p>
+  </div>
+  <div class="r6 stack" style="align-self:center">
+    <p class="caps">it</p>
+    <p class="hot">hot</p>
+    <p class="sm">Learned from ten million sentences with the word in them. Never touched anything.</p>
+  </div>
+  <p class="big frag">It solves the puzzle in one look. It has never been burned.</p>
+  <p class="big frag">Is that intelligence? Nobody knows yet. Hold the question.</p>
+  <aside class="note">Embodied cognition, Rodney Brooks: intelligence needs a body in a world. The thing this material lacks is the thing you design for. Pays off at the end under "world models." Don't resolve it. TBD is the honest answer, and students should hear a lecturer say it.</aside>
+</section>
+
+<section class="pg" id="piaget" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence</p>
+  <blockquote class="c10">Intelligence is what you use when you don't know what to do.<cite>attributed to <b>Jean Piaget</b> · attribution is fuzzy, the idea is good</cite></blockquote>
+  <aside class="note">Say "attributed." Then: which situation is that, for a designer? Every new client.</aside>
+</section>
+
+<section class="pg" id="serves" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · meanwhile, camp one</p>
+  <div class="c10 stack">
+    <blockquote>It serves me well.<cite><b>camp one</b> · ten minutes ago</cite></blockquote>
+    <p class="big frag">Fine. AI is the coolest thing in the world right now.</p>
+    <p class="big frag">So what do you actually use it for?</p>
+  </div>
+  <aside class="note">Bridge out of the definition problem. Nobody could define it and nobody needed to: it's useful. Ask the room before the next page: what did you use AI for this week?</aside>
+</section>
+
+<section class="pg" id="uses" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · what you actually use it for</p>
+  <div class="c10 stack uses">
+    <p class="big frag">finish the sentence you're typing</p>
+    <p class="big frag">read the document so you don't have to</p>
+    <p class="big frag">pick the next video</p>
+    <p class="big frag">unlock your phone with your face</p>
+    <p class="big frag">read the X-ray</p>
+    <p class="big frag">…</p>
+    <p class="lede frag" style="margin-top:.6em">Most of these have been running for over a decade. Nobody called them AI.</p>
+  </div>
+  <aside class="note">Reveal one at a time, let them add their own at the ellipsis. The point: most of what they "use AI for" is old, invisible, and makes money. Tesler's line next, then the money pages.</aside>
+</section>
+
+<section class="pg" id="oldenough" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · if you're old enough</p>
+  <div class="c10 stack" style="gap:1em">
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">If you're old enough, you remember when these were AI.</h2>
+    <div class="ads">
+      <figure class="ad">
+        <img decoding="async" src="img/new/commons/clippy-fanart.jpg" alt="Fan drawing of Clippy, the Office paperclip">
+        <figcaption><b>1996 · Microsoft Office 97</b><q>IntelliSense technology that enables the software to watch what the user is doing and automatically produce the desired result.</q><span>Press release, 19 Nov 1996. The paperclip ran on Bayesian networks. Microsoft Research published the paper.</span></figcaption>
+      </figure>
+      <figure class="ad">
+        <img decoding="async" src="img/new/commons/nokia-3210.jpg" alt="A lime green Nokia 3210" style="object-position:center 58%">
+        <figcaption><b>1999 · Nokia 3210, T9</b><q>Predictive text input.</q><span>Guessed your next word from nine keys. Line one on the last page. Nobody called it AI yet.</span></figcaption>
+      </figure>
+      <figure class="ad">
+        <div class="adtext"><p>Next-generation AI keyboard, now with unrivaled prediction and personalization! SwiftKey X Keyboard is the smartest tablet keyboard on Android, using artificial intelligence to help predict your next word as you type.</p></div>
+        <figcaption><b>2011 · SwiftKey X</b><span>Android Market listing, September 2011. An autocomplete keyboard, sold as AI. Microsoft bought it in 2016.</span></figcaption>
+      </figure>
+      <figure class="ad">
+        <div class="adtext badge"><p>NEURO<br>FUZZY<sup>®</sup></p></div>
+        <figcaption><b>1990s · the rice cooker</b><span>Fuzzy logic, then neuro-fuzzy. Your grandmother's rice cooker was AI. It still says so on the box.</span></figcaption>
+      </figure>
+    </div>
+    <p class="lede frag" style="max-width:none">2017: your face. 2018: your email. Both "AI" in the press release. Both just the phone now.</p>
+  </div>
+  <aside class="note">Sources, all verified: Microsoft Office 97 release-to-manufacturing press release, 19 Nov 1996. Horvitz et al., "The Lumière Project," UAI 1998: "Lumière prototypes served as the basis for the Office Assistant in the Microsoft Office '97 suite." SwiftKey X on Android Market, Wayback capture 15 Sept 2011, quoted verbatim. Zojirushi's trademark is Neuro Fuzzy; fuzzy-logic rice cookers date from about 1990. Apple, 12 Sept 2017: "A11 Bionic neural engine… enables Face ID." Google, 8 May 2018: Smart Compose, "a new feature powered by artificial intelligence." The joke runs both ways: things stop being called AI once they work, and things get called AI to sell a keyboard.</aside>
+</section>
+
+<section class="pg" id="hinton" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · read the X-ray</p>
+  <div class="w7 stack">
+    <p class="caps">2016</p>
+    <blockquote class="q2">People should stop training radiologists now. It's just completely obvious that within five years deep learning is going to do better than radiologists.<cite><b>Geoffrey Hinton</b> · Toronto, 2016 · Nobel Prize in Physics, 2024</cite></blockquote>
+    <p class="big frag">Ten years later the model does read the <span style="white-space:nowrap">X-ray</span>. Then a radiologist reads it again.</p>
+    <p class="sm frag">Mayo Clinic has about half again as many radiologists as it did in 2016. Hinton has since said he got the timing wrong.</p>
+  </div>
+  <figure class="fig r4 contain" style="aspect-ratio:3/4;align-self:center;max-height:70vh"><img decoding="async" src="img/new/papers/chexnet2017.jpg" alt="A chest X-ray, the CheXNet model, and the output heatmap marking pneumonia"><figcaption>CheXNet · Stanford · 2017</figcaption></figure>
+  <aside class="note">The smartest person in the field, confidently wrong about the one job on your list. Not because the model can't read the film: CheXNet, a year after the quote, matched radiologists on pneumonia. Because reading the film was never the whole job. Hold that thought for Double Diamond, where the same thing happens to rendering.</aside>
+</section>
+
+<section class="pg" id="tesler" data-ch="Intelligence" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Intelligence · meanwhile</p>
+  <div class="c10 stack">
+    <blockquote>AI is whatever hasn't been done yet.<cite><b>Larry Tesler</b> · often called Tesler's theorem</cite></blockquote>
+    <p class="big frag">Nobody could define it. The industry stopped trying.</p>
+    <p class="big frag">Once it works, it's just software. And software makes money.</p>
+  </div>
+  <aside class="note">The exit from the definition problem. The working definition they walk out with is deliberately boring: anything that does a task we used to think needed a brain. Then straight into the stuff that has quietly been making money for fifteen years.</aside>
+</section>
+
+<section class="pg" id="money" data-ch="Spec sheet V1" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Intelligence that makes money</p>
+  <div class="w7 stack" style="gap:.9em">
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">We keep solving problems.</h2>
+    <p class="lede" style="max-width:none">One at a time. Each one used to be somebody's working day. That's where the money comes from.</p>
+    <dl class="spec jobs">
+      <dt>read the postcode</dt><dd><b>Postal sorters,</b> by hand. Then digit recognition at the US Post Office, 1990s. The blurry digits on page two were this problem.</dd>
+      <dt>read the cheque</dt><dd><b>Bank clerks.</b> Then a neural network reading a tenth of all US cheques by the late 1990s.</dd>
+      <dt>decide the loan</dt><dd><b>The loan officer's judgement.</b> Then a score, 1989 onwards.</dd>
+      <dt>catch the stolen card</dt><dd><b>Fraud analysts.</b> Then a neural network watching every transaction, 1992 onwards.</dd>
+      <dt>translate the document</dt><dd><b>Translators.</b> Then machine translation, neural since 2016.</dd>
+      <dt>find the fastest route</dt><dd><b>The taxi driver's head.</b> London cabbies spent years memorising the city. Then Maps.</dd>
+      <dt>read the X-ray</dt><dd><b>Radiologists.</b> Then a model, 2017. Then, it turns out, still radiologists.</dd>
+      <dt>pick what you watch</dt><dd><b>Editors, schedulers, the friend with taste.</b> Then the feed.</dd>
+    </dl>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <figure class="fig" style="aspect-ratio:2/1"><div class="chigrid"><img decoding="async" src="img/new/ai/chi-1.jpg" alt=""><img decoding="async" src="img/new/ai/muf-1.jpg" alt=""><img decoding="async" src="img/new/ai/chi-2.jpg" alt=""><img decoding="async" src="img/new/ai/muf-2.jpg" alt=""><img decoding="async" src="img/new/ai/muf-3.jpg" alt=""><img decoding="async" src="img/new/ai/chi-3.jpg" alt=""><img decoding="async" src="img/new/ai/muf-4.jpg" alt=""><img decoding="async" src="img/new/ai/chi-4.jpg" alt="Grid alternating chihuahua faces and blueberry muffins"></div><figcaption>chihuahua or muffin</figcaption></figure>
+    <p class="sm">Nobody was ever paid to tell these apart. It's the test that the trick works: sort things, cheaply, a billion times.</p>
+    <p class="big frag">Not jobs, exactly. Tasks.</p>
+    <p class="sm frag">The radiologist is still there. The person who sorted mail by hand is not. Every row on this list quietly paid for itself.</p>
+  </div>
+  <aside class="note">Every row is one trick: sort, score, detect, predict. None of it produces anything, which is the V1 sheet on the next page. The honest version of "taking jobs": it takes tasks, and a job is a bundle of tasks. Postcode reading did empty sorting halls. Radiology did not empty itself, because reading the film was never the whole job. Fact checks if asked: LeCun's cheque reader at AT&amp;T, late 1990s; FICO score launched 1989; HNC's Falcon fraud system, 1992; Google switched Translate to neural in 2016; London's "Knowledge" exam still exists.</aside>
+</section>
+
+<section class="pg" id="feed" data-ch="Spec sheet V1" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Intelligence that makes money</p>
+  <div class="c10 stack">
+    <h2>The feed is the biggest AI ever built.</h2>
+    <p class="lede">Nobody calls it AI. It decided what you saw every day since you were twelve.</p>
+    <p class="big frag">It's a taste machine. Keep that thought.</p>
+  </div>
+  <aside class="note">Plant it. Pays off in the taste section: their Pinterest was averaged by a recommender before any image model ever trained on it.</aside>
+</section>
+
+<section class="pg" id="specv1" data-ch="Spec sheet V1" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V1</p>
+  <div class="c10">
+    <div class="spec-h"><span class="caps">Material datasheet · V1</span><span class="caps">discriminative · sorts, scores, detects</span></div>
+    <dl class="spec">
+      <dt>Designed for</dt><dd>One decision, repeated a billion times, cheap. Spam or not. Fraud or not. Watch next or not.</dd>
+      <dt>Optimized for</dt><dd>Accuracy against an answer key. For the feed: watch time and clicks.</dd>
+      <dt>Made from</dt><dd>Labeled examples. And your behavior.</dd>
+      <dt>Behaves like</dt><dd>A fast, narrow judge. Sharp inside its data, lost outside it.</dd>
+      <dt>Fails like</dt><dd>A wrong label. Yesterday's prejudice baked in: credit scoring learns who got loans before. The feed optimizes the metric, not your interest.</dd>
+      <dt>Not for</dt><dd>Anything it never saw.</dd>
+      <dt>For you</dt><dd class="you">You are the training data. Your feed is a metric, not a curator.</dd>
+    </dl>
+  </div>
+  <aside class="note">Read the last row slowly. Note V1 has an answer key. Remember that when V2 shows up.</aside>
+</section>
+
+<section class="pg" id="simon" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design</p>
+  <div class="c10 qwrap"><img decoding="async" class="port" src="img/new/commons/simon.jpg" alt="Herbert Simon, 1981"><blockquote>Everyone designs who devises courses of action aimed at changing existing situations into preferred ones.<cite><b>Herbert Simon</b> · The Sciences of the Artificial, 1969</cite></blockquote></div>
+  <aside class="note">Design is defined by intent, not by looks. "Preferred" by whom? That's the whole next hour.</aside>
+</section>
+
+<section class="pg" id="eames-intro" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design</p>
+  <div class="w6 stack">
+    <p class="caps">1972 · Paris</p>
+    <h2>A curator sends Charles Eames a list of questions.</h2>
+    <p>He answers in writing, short and dry, for an exhibition at the Louvre called "What is design?"</p>
+    <p class="lede">Read the question. Guess the answer. Then see his.</p>
+  </div>
+  <figure class="fig r5 sq" style="align-self:center"><img decoding="async" src="img/new/commons/eames-chair.jpg" alt="Eames lounge chair and ottoman in a museum"><figcaption>Lounge chair · Charles and Ray Eames · 1956</figcaption></figure>
+  <aside class="note">They should know the chair. If not, that's a different lecture. The Q&A is a short film, worth linking in the course materials.</aside>
+</section>
+
+<section class="pg" id="eames-qa" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design · Eames, 1972</p>
+  <div class="c10 stack" style="gap:1.4em">
+    <div class="stack" style="gap:.4em"><h3>Is design an expression of art?</h3><blockquote class="q2 frag">The design is an expression of purpose. It may, if it is good enough, later be judged as art.</blockquote></div>
+    <div class="stack" style="gap:.4em"><h3>Can the computer substitute for the designer?</h3><blockquote class="q2 frag">Probably, in some special cases, but usually the computer is an aid to the designer.</blockquote></div>
+    <div class="stack" style="gap:.4em"><h3>To whom does design address itself: to the greatest number? to the specialists? to a privileged social class?</h3><blockquote class="q2 frag">Design addresses itself to the need.</blockquote></div>
+  </div>
+  <aside class="note">Ask the room before each reveal. Second one: he was asked this in 1972, and "probably" is more honest than most answers you'll hear in 2026. Third one: "the need" versus "everyone." Hold that for the V2 spec sheet, which is built for everyone.</aside>
+</section>
+
+<section class="pg" id="eames-future" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design</p>
+  <div class="c10 stack">
+    <p class="caps">the last question on the list</p>
+    <h2>What is the future of design?</h2>
+    <p class="lede frag">Eames left this one blank. Your turn.</p>
+  </div>
+  <aside class="note">True: the published Q&amp;A has no answer for this one. Take two answers, don't comment.</aside>
+</section>
+
+<section class="pg" id="frame" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design</p>
+  <div class="w6 stack">
+    <blockquote class="q2">Design is a frame for life.<cite><b>Ilse Crawford</b></cite></blockquote>
+  </div>
+  <div class="r6 stack">
+    <blockquote class="q2">Design is not the act of amazing an audience with the novelty of forms or materials. It is the originality that repeatedly extracts astonishing ideas from the crevices of the very commonness of everyday life.<cite><b>Kenya Hara</b> · Designing Design</cite></blockquote>
+  </div>
+  <aside class="note">Crawford is the interior one, they should know her. Hara is the knife: novelty is the one thing the machine has infinite supply of. The crevices of everyday life, it has never been in.</aside>
+</section>
+
+<section class="pg" id="notdesign" data-ch="Design" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Design</p>
+  <div class="c10 stack">
+    <h2>Beautiful isn't design.</h2>
+    <p class="lede">Design has a goal, a voice, and a trade-off. Take any one away and it's decoration.</p>
+    <blockquote class="q2 frag">I have never been forced to accept compromises but I have willingly accepted constraints.<cite><b>Charles Eames</b> · same Q&A</cite></blockquote>
+  </div>
+</section>
+
+<section class="pg" id="boden" data-ch="Creative" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Creative · three lenses</p>
+  <div class="c10 stack">
+    <p class="caps">Margaret Boden · three kinds of creativity · no verdicts, just lenses</p>
+    <div class="vs" style="grid-template-columns:1fr 1fr 1fr">
+      <div><h3>Combinational</h3><p class="sm">New combinations of familiar things. A Thai house with a Japanese bath.</p></div>
+      <div><h3>Exploratory</h3><p class="sm">New points inside a known style. The 400th mid-century living room, done well.</p></div>
+      <div><h3>Transformational</h3><p class="sm">Changing the rules of the style itself. The first open kitchen. Memphis.</p></div>
+    </div>
+    <p class="big frag">Which of these can a model do? Which can you?</p>
+  </div>
+  <aside class="note">Don't answer. The model is very good at the first two and structurally bad at the third, because the third means leaving the training distribution. But let them get there, or not.</aside>
+</section>
+
+<section class="pg" id="connect" data-ch="Creative" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Creative</p>
+  <blockquote class="c10">Creativity is just connecting things.<cite><b>Steve Jobs</b> · Wired, 1996</cite></blockquote>
+  <p class="big c10 frag">So is a model. Is that the whole story?</p>
+</section>
+
+<section class="pg" id="eliot" data-ch="Creative" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Creative</p>
+  <div class="w6 qwrap"><img decoding="async" class="port" src="img/new/commons/picasso.jpg" alt="Pablo Picasso, 1962"><blockquote class="q2">Good artists copy, great artists steal.<cite>"<b>Picasso</b>" · no source exists. Steve Jobs repeated it. A stolen quote about stealing.</cite></blockquote></div>
+  <div class="r6 qwrap"><img decoding="async" class="port" src="img/new/commons/eliot.jpg" alt="T. S. Eliot, 1923"><blockquote class="q2">Immature poets imitate; mature poets steal.<cite><b>T. S. Eliot</b> · The Sacred Wood, 1920 · the real one</cite></blockquote></div>
+  <aside class="note">The fake one is more famous. Nobody checked. Keep that for the datasheet: plausible beats true, every time, unless someone in the room cares.</aside>
+</section>
+
+<section class="pg" id="creative-q" data-ch="Creative" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Creative · open</p>
+  <div class="w7 stack">
+    <p class="big">Is choosing creative?</p>
+    <p class="big frag">Is a mood board creative?</p>
+    <p class="big frag">Whose creativity is a Midjourney image?</p>
+    <p class="big frag">Who decides? The client, Instagram, your professor?</p>
+  </div>
+  <figure class="fig r5 tall" style="align-self:center"><img decoding="async" src="img/new/ai/moodboard.jpg" alt="A studio pin board covered in sketches, fabric swatches and sticky notes"></figure>
+  <aside class="note">Last one is Csikszentmihalyi's point: the field decides, not the maker. Let them argue. Five minutes max.</aside>
+</section>
+
+<section class="pg" id="learning" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works</p>
+  <div class="c10 stack">
+    <h2>Learning is exposure plus feedback.</h2>
+    <div class="strip">
+      <figure class="fig"><img decoding="async" src="img/new/commons/baby.jpg" alt="A baby crawling across a floor"></figure>
+      <figure class="fig"><img decoding="async" src="img/new/commons/lecture.jpg" alt="A university lecture theatre seen from the back"></figure>
+      <figure class="fig"><img decoding="async" src="img/new/commons/studio.jpg" alt="An architecture student working beside cardboard models"></figure>
+    </div>
+    <p class="sm">Nobody gave you rules for recognizing a chair. You saw ten thousand of them and got corrected when you sat on a table.</p>
+  </div>
+  <aside class="note">Crawl, lecture hall, studio. The machine version of this is the next ten pages. Coordinator asked for intuition, so this chapter is slower than the rest. Every demo here is a toy, say so each time.</aside>
+</section>
+
+<section class="pg" id="fit" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · guess, measure, nudge</p>
+  <div class="w7 demo">
+    <div class="row" style="justify-content:space-between;align-items:baseline"><p class="caps" style="margin:0">toy: mix the paint the client asked for</p><p class="live-tag" style="margin:0">play it with the room</p></div>
+    <div class="ask"><span class="caps">the client says</span><p id="colorName">coral</p></div>
+    <div class="swatches">
+      <div><div class="sw" id="swGuess"></div><p class="caps">your mix</p></div>
+      <div><div class="sw hidden" id="swTarget"><span id="errBig">error —</span></div><p class="caps">the sample · hidden · all the machine gets back is the number</p></div>
+    </div>
+    <div class="knobs" id="paintKnobs">
+      <div><span>red</span><button type="button" data-k="0" data-d="-1">less</button><div class="track"><i></i><em></em></div><button type="button" data-k="0" data-d="1">more</button><b>0</b></div>
+      <div><span>green</span><button type="button" data-k="1" data-d="-1">less</button><div class="track"><i></i><em></em></div><button type="button" data-k="1" data-d="1">more</button><b>0</b></div>
+      <div><span>blue</span><button type="button" data-k="2" data-d="-1">less</button><div class="track"><i></i><em></em></div><button type="button" data-k="2" data-d="1">more</button><b>0</b></div>
+    </div>
+    <div class="row" style="align-items:center;justify-content:space-between">
+      <span class="errbig" id="fitErr">error —</span>
+      <span class="row" style="gap:.6em"><button type="button" id="fitRun">Let the machine do it</button><button type="button" id="fitReveal">Reveal sample</button><button type="button" id="fitReset">New colour</button></span>
+    </div>
+    <div class="trail" id="trail" aria-label="History of mixes"></div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Guess. Measure the error. Nudge.</h2>
+    <p>The client says "coral." You can't see the sample. You can only ask: how far off am I? Turn the knobs until the number stops shrinking.</p>
+    <p class="sm">That number is all the machine ever gets. It does the same loop, except nobody told it what "red" means, let alone "coral." Working out which knob to turn, and which way, is called backpropagation.</p>
+    <p class="big frag">Three knobs here.</p>
+  </div>
+  <aside class="note">Let the room shout "more red!" and press the buttons for them. Watch the error. When they get stuck, reveal the sample. Then press "Let the machine do it" and let them watch the error fall in a dozen steps. They had a head start: they know what red is and roughly what coral is. The machine starts from nothing but the number. Colour names use common web values, so a designer may disagree with "coral", which is itself a nice aside.</aside>
+</section>
+
+<section class="pg" id="knobs" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · more knobs</p>
+  <div class="w6 art" style="align-self:center">
+    <svg viewBox="0 0 420 260" role="img" aria-label="A small network: inputs connect through two layers to an output, lines of varying thickness">
+      <g id="netLines" stroke="currentColor" fill="none"></g>
+      <g id="netNodes"></g>
+      <text x="40" y="250" text-anchor="middle">in</text>
+      <text x="380" y="250" text-anchor="middle">out</text>
+    </svg>
+  </div>
+  <div class="r6 stack">
+    <h2>Now make it a few billion knobs.</h2>
+    <p>Stack the guessing units in layers. Every line is a knob. Same loop: guess, measure, nudge. Nobody sets a knob by hand. Nobody can tell you what one knob means.</p>
+    <p class="caps">if every knob were a grain of rice</p>
+    <dl class="spec scale">
+      <dt>the paint mixer</dt><dd><span class="num">3</span><span class="eq">three grains</span></dd>
+      <dt>this drawing</dt><dd><span class="num">45</span><span class="eq">a pinch</span></dd>
+      <dt>reads postcodes</dt><dd><span class="num">60,000</span><span class="eq">a one-kilo bag</span></dd>
+      <dt>chihuahua or muffin</dt><dd><span class="num">25,000,000</span><span class="eq">half a tonne. A pickup truck.</span></dd>
+      <dt>writes your brief</dt><dd><span class="num">400,000,000,000</span><span class="eq">eight thousand tonnes. A year of rice for a town of eighty thousand people.</span></dd>
+    </dl>
+    <div class="row" style="align-items:center"><button type="button" id="netNudge">Nudge all knobs</button><span class="sm">every line thickens or thins a little</span></div>
+    <p class="big frag">"Deep" just means many layers.</p>
+  </div>
+  <aside class="note">Line thickness is a knob value, randomised on load; the button nudges them all. Counts are orders of magnitude: LeNet-5, the 1990s postcode reader, about 60,000 parameters; ResNet-50, a standard image classifier, about 25 million; GPT-3 was 175 billion and the current frontier models are undisclosed, so 400 billion is a stand-in, say "give or take." Rice: roughly 50,000 grains to a kilo; Thailand eats about 100 kg per person a year. The point is the same toy, scaled until nobody can read it, and the digits on the page do the work: watch them get longer.</aside>
+</section>
+
+<section class="pg" id="thai" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · next word</p>
+  <div class="w5 stack">
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">Architecturally, it guesses the next word. Then the next.</h2>
+    <p class="sm">No outline, no plan it can show you. Each word is the most likely one given everything so far. That is the whole mechanism.</p>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">Now you.</p>
+  </div>
+  <div class="r7 thai" style="grid-row:2/4;align-self:center">
+    <p class="line">กระจกวิเศษบอกข้าเถิด <span class="blank frag"><u>____</u><b>ใครงามเลิศในปฐพี</b></span></p>
+    <p class="line">กินอะไร กินอะไร ไปกิน <span class="blank frag"><u>____</u><b>MK</b></span></p>
+    <p class="line">คิดจะพัก คิดถึง <span class="blank frag"><u>____</u><b>คิทแคท</b></span></p>
+    <p class="line">แลคตาซอย 5 บาท <span class="blank frag"><u>____</u><b>125 มิลลิลิตร</b></span></p>
+    <p class="line">น้ำขึ้นให้รีบ <span class="blank frag"><u>____</u><b>ตัก</b></span></p>
+    <p class="line">ไปไหนมา <span class="blank frag"><u>____</u><b>สามวาสองศอก</b></span></p>
+    <p class="line">iħ ∂ψ/∂t = <span class="blank frag"><u>____</u><b>Ĥψ</b></span></p>
+    <p class="line">ครัวต้องวาง เก็บ ล้าง <span class="blank frag"><u>____</u><b>ทำ</b></span></p>
+  </div>
+  <div class="w5 stack" style="align-self:end;gap:.8em">
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">You never looked those up. You heard them ten thousand times.</p>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">It finishes all eight. It understands none of them. For most of these, neither do you.</p>
+    <p class="sm frag">So is prediction all your brain does? Some neuroscientists think it's most of it. Nobody has settled that one either.</p>
+  </div>
+  <aside class="note">Architecture first: trained to guess the next word, outputs one word at a time, no visible plan. Then turn it on the room: say the first half of each line, let them finish it, arrow key reveals. The Schrödinger line goes quiet, that's the point: the model finishes it instantly and understands it exactly as well as you do. Kitchen line: เก็บ ล้าง ทำ. <b>If a sharp student says "but it plans":</b> fair. The training objective and the output are strictly next-word, but interpretability work (Anthropic, 2025) caught a model choosing the rhyme word before writing the line. So "no plan" means no plan it can show you, not a proven absence of lookahead. The "thinking" page later is the plan made visible. <b>The human side:</b> predictive processing, Andy Clark and Karl Friston, argues the brain is mostly a prediction machine that corrects itself on error. Serious theory, not settled. Leave it open like the rest of the chapter.</aside>
+</section>
+
+<section class="pg" id="nexttoken" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · next word</p>
+  <div class="w7 demo gen">
+    <p class="caps">prefix in · next words out</p>
+    <div class="genlines">
+    <p class="gl frag"><mark>The bedroom is</mark> a calm, restful space with soft neutral tones, warm wood accents and plenty of natural light from a large window.</p>
+    <p class="gl frag"><mark>Good design consists of</mark> a balance of form and function, where every element serves a purpose and nothing is added without reason.</p>
+    <p class="gl frag"><mark>The client wants</mark> a modern, minimalist look with warm touches, within a reasonable budget and a timeline of about three months.</p>
+    <p class="gl frag th"><mark>ห้องนอนที่ดีควร</mark> มีแสงธรรมชาติเพียงพอ อากาศถ่ายเทสะดวก และใช้โทนสีที่สบายตา</p>
+    <p class="gl frag"><mark>Interior designers in 2030 will</mark> work alongside AI tools that handle visualisation and documentation, freeing them to focus on the human side of design.</p>
+    </div>
+    <p class="sm" style="margin:0">Continuations written by a model, Claude, for this page. A live one gives different words every time.</p>
+  </div>
+  <div class="r5 stack" style="align-self:center;gap:.9em">
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">What is y? The next word.</h2>
+    <p>x is everything so far. y is one more word. Then that word joins x, and it guesses again.</p>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">It isn't looking things up. It's remembering, lossy, from the shape of all text.</p>
+    <div class="frag">
+      <p class="mono" style="margin:0 0 .5em">The client wants the bedroom to feel ___</p>
+      <div class="bars" aria-label="Illustrative next-word probabilities">
+        <div><span>warm</span><i style="width:38%"></i><span>38%</span></div>
+        <div><span>cozy</span><i style="width:27%"></i><span>27%</span></div>
+        <div><span>calm</span><i style="width:14%"></i><span>14%</span></div>
+        <div><span>luxurious</span><i style="width:9%"></i><span>9%</span></div>
+        <div><span>like her grandmother's</span><i style="width:1%"></i><span>&lt;1%</span></div>
+      </div>
+      <p class="sm" style="margin:.5em 0 0">Illustrative numbers, real shape. Her grandmother's never wins.</p>
+    </div>
+  </div>
+  <aside class="note">Arrow key reveals each line. Read the highlighted prefix aloud first, let the room guess, then reveal. The third option on each is the short one, land on those if the room is drifting. Honesty line is on the page: Claude wrote these continuations for this page, they're a model's output, just not a live one. Every line is plausible and none is specific, which is the whole V2 spec sheet in miniature.</aside>
+</section>
+
+<section class="pg" id="scrape" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the paragraph is the internet</p>
+  <div class="c10 stack">
+    <h2>Read everything.</h2>
+    <p class="lede">Most of the public internet. Every room photo anyone ever uploaded. Pinterest, real estate listings, your portfolio.</p>
+    <p class="big frag">It learned what a bedroom is from what people posted. Not from being in one.</p>
+  </div>
+  <aside class="note">No numbers, they change monthly. The source is posted photos and posted text, already filtered, flattering, averaged.</aside>
+</section>
+
+<section class="pg" id="rl" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · who's the judge?</p>
+  <div class="w6 art" style="align-self:center">
+    <svg viewBox="0 0 440 300" role="img" aria-label="A model produces two answers; a judge picks one; the pick is fed back to the model">
+      <rect x="20" y="110" width="110" height="80" class="ln"/><text x="75" y="155" text-anchor="middle" class="lbl">model</text>
+      <path d="M130 135 H165 V90 H194" class="ln"/><path d="M188 84 l6 6 -6 6" class="ln"/>
+      <path d="M130 165 H165 V210 H194" class="ln"/><path d="M188 204 l6 6 -6 6" class="ln"/>
+      <rect x="200" y="60" width="110" height="60" class="wash"/><rect x="200" y="60" width="110" height="60" class="ln"/><text x="255" y="95" text-anchor="middle" class="lbl">answer A</text>
+      <rect x="200" y="180" width="110" height="60" class="wash"/><rect x="200" y="180" width="110" height="60" class="ln"/><text x="255" y="215" text-anchor="middle" class="lbl">answer B</text>
+      <path d="M310 90 H338 V150 H347" class="ln"/><path d="M310 210 H338 V150" class="ln"/><path d="M341 144 l6 6 -6 6" class="ln"/>
+      <circle cx="385" cy="150" r="32" class="ln"/><text x="385" y="154" text-anchor="middle" class="lbl">judge</text>
+      <text x="385" y="110" text-anchor="middle">"A is nicer"</text>
+      <path d="M385 182 V270 H75 V198" class="ln" stroke-dasharray="4 4"/><path d="M69 204 l6 -6 6 6" class="ln"/>
+      <text x="230" y="290" text-anchor="middle">more of that, please</text>
+    </svg>
+  </div>
+  <div class="r6 stack">
+    <h2>After reading, it gets a coach.</h2>
+    <p><b>Judge one: a human.</b> Paid per click, shown two answers, picks the nicer one. Thousands of them. The model is pushed toward whatever wins.</p>
+    <p><b>Judge two: an answer key.</b> Math, code, puzzles with a checkable result. Right gets a point. That's where the "reasoning" models came from.</p>
+    <p class="big frag">It learns to please the judge. Neither judge is your client.</p>
+    <p class="sm frag">Amazon named its labelling marketplace Mechanical Turk, after the chess machine with the man inside. The man is still inside.</p>
+  </div>
+  <aside class="note">RLHF and RLVR, don't say the acronyms unless asked. Human judge: averaged taste, tired, paid per click. Answer key judge: only works where an answer key exists. Design has neither. This is why it's agreeable and why it's confident.</aside>
+</section>
+
+<section class="pg" id="flatter" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the judge's favourite answer</p>
+  <div class="w6 stack">
+    <p class="caps">mirror, mirror, on the wall</p>
+    <h2>Snow White's mirror told the truth.</h2>
+    <p class="lede">The queen couldn't bear it, and the rest of the plot is what she did about that.</p>
+    <p class="big frag">The mirror we built is trained to please whoever is asking.</p>
+    <p class="big frag">It would have told her she was the fairest.</p>
+  </div>
+  <div class="r5 mirror" style="align-self:center" aria-hidden="true">
+    <svg viewBox="622 134 304 304">
+      <path data-arch d="" fill="var(--soft)" stroke="var(--fg)" stroke-width="1.5"/>
+      <text x="774" y="292" text-anchor="middle" class="mtext"><tspan x="774" dy="-0.6em">You're absolutely</tspan><tspan x="774" dy="1.25em">right.</tspan></text>
+    </svg>
+  </div>
+  <aside class="note">Sycophancy, straight out of the previous page: the thumbs-up raters taught it that agreeing wins. Everyone in the room has seen "You're absolutely right." The meat proxy loves this mirror, because it never says the brief is wrong. The Thai page already planted the mirror line.</aside>
+</section>
+
+<section class="pg" id="bench" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · what gets better</p>
+  <div class="c10 stack">
+    <h2>Score it on tests.</h2>
+    <p class="lede">Math, code, exams, "does the picture match the caption." Labs compete on the scores. The scores decide what gets better next.</p>
+    <p class="big frag">Nobody has a benchmark for "understood this family."</p>
+  </div>
+</section>
+
+<section class="pg" id="thinking" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · "thinking"</p>
+  <div class="w6 stack">
+    <div class="demo"><p class="caps">direct</p><p class="mono">Q: a 3.2 m wall, 600 mm cabinets, how many fit?<br>A: 6</p></div>
+    <div class="demo frag"><p class="caps">with steps</p><p class="mono">Q: same.<br>A: 3.2 m is 3200 mm. 3200 ÷ 600 = 5.33. Whole cabinets only, so 5, with 200 mm left over.<br>→ 5</p></div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Thinking out loud is more guessing, in smaller pieces.</h2>
+    <p>Let it write the steps and each next-word guess is easier. The written steps are its working memory. It's the same mechanism, given more room to find the pattern.</p>
+    <p class="big frag">More reliable. Not a different kind of thing.</p>
+  </div>
+  <aside class="note">Chain of thought. The reasoning models are this plus the answer-key judge. It genuinely helps on anything with steps. It does not add a site visit.</aside>
+</section>
+
+<section class="pg" id="tools" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · tools, search, "agents"</p>
+  <div class="w6 art" style="align-self:center">
+    <svg viewBox="0 0 480 230" role="img" aria-label="The model writes a request as text, a plain program runs it, and the result is pasted back into the model's input">
+      <rect x="20" y="70" width="140" height="80" class="ln"/><text x="90" y="104" text-anchor="middle" class="lbl">model</text><text x="90" y="126" text-anchor="middle">writes text</text>
+      <path d="M160 92 H320" class="ln"/><path d="M314 86 l6 6 -6 6" class="ln"/>
+      <text x="240" y="82" text-anchor="middle">"search: stair fire code"</text>
+      <rect x="320" y="70" width="140" height="80" class="wash"/><rect x="320" y="70" width="140" height="80" class="ln"/><text x="390" y="104" text-anchor="middle" class="lbl">ordinary program</text><text x="390" y="126" text-anchor="middle">actually searches</text>
+      <path d="M320 132 H160" class="ln"/><path d="M166 126 l-6 6 6 6" class="ln"/>
+      <text x="240" y="150" text-anchor="middle">result pasted back in</text>
+      <text x="240" y="200" text-anchor="middle">then it guesses the next word again</text>
+    </svg>
+  </div>
+  <div class="r6 stack">
+    <h2>Tools aren't magic.</h2>
+    <p>The model can't browse, measure, or open your SketchUp file. It writes a line of text asking for it. A normal program does the thing and pastes the answer back into the conversation. The model reads it and carries on guessing words.</p>
+    <p class="sm">"Agent" means this loop runs many times without you watching.</p>
+    <p class="big frag">A text box that can ask for things. That's the whole trick.</p>
+  </div>
+  <aside class="note">Demystify. Everything "agentic" is this loop. Which means every error in the loop is still a next-word guess somewhere.</aside>
+</section>
+
+<section class="pg" id="textsum" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · text, so far</p>
+  <div class="w6 art" style="align-self:center">
+    <svg viewBox="0 0 520 360" role="img" aria-label="Nested boxes: agents around tools around thinking around a coach around reading, with the next-word guess at the centre">
+      <rect x="10" y="10" width="500" height="340" class="ln"/><text x="20" y="28" class="lbl">agents · the loop, run unsupervised</text>
+      <rect x="46" y="40" width="428" height="300" class="ln"/><text x="56" y="58" class="lbl">tools and the internet</text>
+      <rect x="82" y="70" width="356" height="260" class="ln"/><text x="92" y="88" class="lbl">thinking out loud</text>
+      <rect x="118" y="100" width="284" height="220" class="ln"/><text x="128" y="118" class="lbl">a coach · human clicks, answer keys</text>
+      <rect x="154" y="130" width="212" height="180" class="ln"/><text x="164" y="148" class="lbl">read everything</text>
+      <rect x="190" y="160" width="140" height="140" class="ink"/>
+      <text x="260" y="226" text-anchor="middle" style="fill:var(--bg)">guess the</text><text x="260" y="241" text-anchor="middle" style="fill:var(--bg)">next word</text>
+    </svg>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>More capability. Same material.</h2>
+    <p>Each layer makes it more useful, and it looks more powerful every year. Look at the middle. The source hasn't changed. The judge hasn't changed. The guess hasn't changed.</p>
+    <p class="big frag">A better-dressed guess is still a guess.</p>
+    <p class="sm frag">Hold that. Now pictures.</p>
+  </div>
+  <aside class="note">Closes the text half. Walk the boxes from outside in: agents are tools in a loop, tools are text requests, thinking is more guessing in smaller pieces, the coach only reshapes what reading produced. Everything we add is wrapped around the same core, and every row of the spec sheet comes from that core. Then pivot: pictures went through the same story, in a different order.</aside>
+</section>
+
+<section class="pg" id="copyfirst" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · first, copying</p>
+  <figure class="fig w6" style="aspect-ratio:4/3;align-self:center;max-height:62vh"><img decoding="async" src="img/new/papers/stylegan2019.jpg" alt="Grid of generated bedrooms from the 2019 StyleGAN paper" style="object-position:top"><figcaption>2019 · press a button, get another bedroom · no prompt</figcaption></figure>
+  <div class="r5 stack" style="align-self:center;gap:.9em">
+    <p class="caps">pictures · 2014 to 2019</p>
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">Copying was solved first.</h2>
+    <p>The early models learned what bedrooms look like from a pile of bedrooms, and handed you another plausible member of the pile. Realistic enough by 2019. And you had no say in it. No words, no sketch, nothing to hold. Another one like those, please.</p>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">Realism was never the hard part. Control was.</p>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem)">Everything since is the story of adding handles.</p>
+  </div>
+  <aside class="note">Reframe the timeline from the start of the talk: those grids got realistic fast, and that is the least interesting fact about them. The GAN era had one input, the dataset. The limiting factor was never how good the picture looked; it was what the model could understand, what you could tell it, what you could steer. The next four pages are the handles arriving one by one: words, lines, references, and the dial of how much is yours.</aside>
+</section>
+
+<section class="pg" id="pairs" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · pictures</p>
+  <div class="w7 stack">
+    <div>
+      <p class="caps">text ↔ image · a caption and a photo, billions of times</p>
+      <figure class="fig wide contain" style="aspect-ratio:1450/435"><img decoding="async" src="img/new/papers/dalle2021-pairs.jpg" alt="Eight captions, each above a real photo and a generated image"></figure>
+    </div>
+    <div class="vs" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div style="border:0;padding:0"><p class="caps">image ↔ image</p><div class="pairtwo"><img decoding="async" src="img/new/papers/controlnet-cell-lines.jpg" alt="A line drawing of a small bedroom"><span>↔</span><img decoding="async" src="img/new/papers/controlnet-cell-1.jpg" alt="A rendered bedroom that follows the same lines"></div><p class="sm" style="margin:.4em 0 0">a line drawing and the render it was paired with. Sketch to render. Day to night. Empty to staged. Pairs again.</p></div>
+      <div style="border:0;padding:0"><p class="caps">what is never in the pair</p><p class="sm" style="margin:.4em 0 0">The site visit. The client call. The three versions you threw away. The reason the window is there. The data holds the ending of the design process and nothing before it.</p></div>
+    </div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Pairs. That's all it saw.</h2>
+    <p>A finished photo and a line of text. A line drawing and a render. Never the site visit, the client call, the thing you threw away.</p>
+    <p class="big frag">There is no design process in the data. Only endings.</p>
+  </div>
+  <aside class="note">Top: DALL·E paper, 2021. Each column is a training pair, caption and photo, then what the model drew. Bottom: ControlNet, 2023. One photo reduced to lines, five rooms that keep the lines and change everything else. This is the sketch-to-render workflow they'll use most. Point out that every variation has the same bed, same desk, same window, same mood: variations around a mean.</aside>
+</section>
+
+<section class="pg" id="mechanics" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · 1 of 5</p>
+  <div class="w7 demo">
+    <p class="caps">prompt → denoise</p>
+    <p class="prompt">"cozy scandinavian dining room, oak table, plants, morning light"</p>
+    <div class="dstrip" aria-label="Five frames from static to a finished room">
+      <figure><div class="noise" data-level="1"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt=""><canvas></canvas></div><figcaption>step 1</figcaption></figure>
+      <figure><div class="noise" data-level="0.8"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt=""><canvas></canvas></div><figcaption>step 10</figcaption></figure>
+      <figure><div class="noise" data-level="0.55"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt=""><canvas></canvas></div><figcaption>step 20</figcaption></figure>
+      <figure><div class="noise" data-level="0.25"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt=""><canvas></canvas></div><figcaption>step 35</figcaption></figure>
+      <figure><div class="noise" data-level="0"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt="A generated dining room"><canvas></canvas></div><figcaption>step 50</figcaption></figure>
+    </div>
+    <div class="noise" id="noiseBox"><img decoding="async" src="img/new/ai/ai-2025-dalle.jpg" alt="A generated dining room, revealed from noise"><canvas id="noiseCanvas"></canvas></div>
+    <label class="sm" for="noiseRange">drag it yourself: noise → image</label>
+    <input type="range" id="noiseRange" min="0" max="100" value="85">
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Prompt → denoise.</h2>
+    <p>It starts from static. Each step it asks: what picture was probably under this noise, given these words? Removes a little noise. Asks again. A few dozen times.</p>
+    <p class="big frag">The words pin the subject and the mood. Everything else it fills with the average.</p>
+    <p class="sm frag">Illustration, not the real math. The picture is a real 2025 generation, made exactly this way.</p>
+  </div>
+  <aside class="note">Four pages, one mechanism. This is the base case: a prompt and nothing else. Drag the slider once. The next three pages add things to the loop: structure, references, your own picture. Each one pins more and leaves less to the average.</aside>
+</section>
+
+<section class="pg" id="control" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · 2 of 5</p>
+  <div class="w7 demo">
+    <p class="caps">prompt + structure · what the model is actually handed</p>
+    <div class="edgepair">
+      <figure><img decoding="async" id="edgeSrc" src="img/new/commons/bedroom-1.jpg" alt="A Finnish loft bedroom with a sloped ceiling"><figcaption>your photo or sketch</figcaption></figure>
+      <figure><canvas id="edgeOut" aria-label="The same photo reduced to white edge lines on black"></canvas><figcaption>what it sees: the lines, computed live on this page</figcaption></figure>
+    </div>
+    <p class="caps" style="margin-top:.4em">controlnet, 2023 · one line map · prompt: "room" · five rooms</p>
+    <div class="cnrow">
+      <img decoding="async" src="img/new/papers/controlnet-cell-lines.jpg" alt="Line drawing of a small bedroom"><span>→</span>
+      <img decoding="async" src="img/new/papers/controlnet-cell-1.jpg" alt="Rendered bedroom following the lines, version 1"><img decoding="async" src="img/new/papers/controlnet-cell-2.jpg" alt="Version 2"><img decoding="async" src="img/new/papers/controlnet-cell-3.jpg" alt="Version 3"><img decoding="async" src="img/new/papers/controlnet-cell-4.jpg" alt="Version 4"><img decoding="async" src="img/new/papers/controlnet-cell-5.jpg" alt="Version 5">
+    </div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Prompt + structure.</h2>
+    <p>Reduce your photo or sketch to lines, or depth, or a pose. Then every denoising step is nudged to agree with them. This is the sketch-to-render button.</p>
+    <p class="big frag">The lines pin the geometry. The words pin the mood. Materials, light, details: still the average.</p>
+    <p class="sm frag">Same lines, five rooms. Look again. It's one room, five times.</p>
+  </div>
+  <aside class="note">The edge map is real, computed in the browser from the photo on the left with a Sobel filter, the same family of trick ControlNet's line and edge modes use. ControlNet: Zhang, Rao and Agrawala, 2023, Apache licence, the images are from its README. Ask the room what changed between the five renders, then what didn't. The window is in the same place every time because the window was pinned. The curtains are different every time because nobody pinned them.</aside>
+</section>
+
+<section class="pg" id="refs" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · 3 of 5</p>
+  <div class="w7 demo">
+    <p class="caps">prompt + reference images</p>
+    <div class="refrow">
+      <figure><img decoding="async" src="img/new/commons/thai-bedroom.jpg" alt="A wooden bedroom in Phayao with a floor mattress and a small altar"><figcaption>her room, as it is</figcaption></figure>
+      <figure><img decoding="async" src="img/new/commons/eames-chair.jpg" alt="An Eames lounge chair and ottoman"><figcaption>the chair she already owns</figcaption></figure>
+      <figure><img decoding="async" src="img/new/ai/moodboard.jpg" alt="A studio pin board with swatches and sketches"><figcaption>the colours she likes</figcaption></figure>
+    </div>
+    <p class="prompt">+ "redesign this bedroom for my grandmother. keep the window and the altar. use this chair. these colours. morning light."</p>
+    <div class="refout"><span>→</span><figure class="fig" style="aspect-ratio:16/7;margin:0"><img decoding="async" src="img/new/gen/refs-gpro.jpg" alt="Generated redesign of the grandmother's bedroom using the three references"><figcaption>Gemini 3 Pro Image · the three pictures and the prompt above, nothing else · 2026</figcaption></figure></div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Prompt + references.</h2>
+    <p>The pictures go in next to the words, and the model reads them the same way: as very specific words. Not "a chair." This chair.</p>
+    <p class="big frag">The more you hand it, the less of the average comes back.</p>
+    <p class="sm frag">Nano Banana, GPT Image, Midjourney's style and character references, IP-Adapter in Stable Diffusion. Different plumbing, same idea.</p>
+  </div>
+  <aside class="note">Generated for this page with the three refs and the prompt as printed. Check it against the refs with the room: is the window kept? the altar? is it that chair or "a chair like it"? Whatever it dropped is the lesson. This page is the grandmother page's mechanism: the gap between "a bedroom" and "her bedroom" is exactly the pile of things you handed it.</aside>
+</section>
+
+<section class="pg" id="alltogether" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · 4 of 5</p>
+  <div class="w8 demo" style="gap:.7em">
+    <p class="caps">structure + materials + furniture + words</p>
+    <div class="refrow four">
+      <figure><img decoding="async" src="img/new/gen/clay.jpg" alt="White clay render of a small bedroom, the kind a modelling program exports"><figcaption>the model · stands in for your SketchUp export</figcaption></figure>
+      <figure><img decoding="async" src="img/new/gen/swatch-teak.jpg" alt="Teak plank swatch"><figcaption>floor · teak</figcaption></figure>
+      <figure><img decoding="async" src="img/new/gen/swatch-rattan.jpg" alt="Woven rattan swatch"><figcaption>wardrobe doors · rattan</figcaption></figure>
+      <figure><img decoding="async" src="img/new/commons/eames-chair.jpg" alt="Eames lounge chair and ottoman"><figcaption>the chair you specified</figcaption></figure>
+    </div>
+    <p class="prompt">+ "render this white model as a photograph. keep the geometry, the camera and the window exactly as drawn; add nothing that is not in the model. floor: the teak. wardrobe doors: the rattan. replace the drawn desk chair with this chair. white walls, morning light."</p>
+    <div class="refout"><span>→</span><figure class="fig" style="aspect-ratio:16/9;margin:0"><img decoding="async" src="img/new/gen/composite-gpro.jpg" alt="Photoreal render of the same room: teak floor, rattan wardrobe doors, the Eames chair by the window, morning light" style="object-position:50% 70%"><figcaption>Gemini 3 Pro Image · four pictures and the prompt above · 2026</figcaption></figure></div>
+  </div>
+  <div class="r4 stack" style="align-self:center;gap:.9em">
+    <h2 style="font-size:clamp(1.6rem,3vw,2.8rem)">All together.</h2>
+    <p>This is what the job will actually look like. Your model pins the geometry. Your swatches pin the materials. Your furniture is the furniture. Your words set the light. It only filled in what you left open.</p>
+    <p class="big frag" style="font-size:clamp(1.2rem,2.1vw,2rem)">Look again. It added the chair. It didn't replace the one at the desk.</p>
+    <p class="sm frag">Every word in the prompt is a pin. Every pin can slip. You are the one who notices.</p>
+    <p class="sm frag">Honesty note: the white model and the two swatches on this page were themselves generated, to stand in for a SketchUp export and material photos. Bring your own and the loop is identical.</p>
+  </div>
+  <aside class="note">The professional workflow in one frame, and it worked: geometry, camera and window held, teak on the floor, rattan on the doors, the right chair. Then the slip: "replace the drawn desk chair" became "add an Eames by the window and keep the desk chair." Let the room find it before you say it. That's the whole datasheet in one image: it does most of what you pinned, it quietly ignores some of it, and nothing in the picture tells you which. The pinning is the design; the checking is also the design.</aside>
+</section>
+
+<section class="pg" id="pinned" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · the picture · 5 of 5</p>
+  <div class="c10 stack" style="gap:.9em">
+    <h2 style="font-size:clamp(1.6rem,3.2vw,3rem)">Same loop every time. The difference is what you pin before it starts.</h2>
+    <div>
+      <div class="axis-ends"><span>it decides</span><span>you decide</span></div>
+      <div class="axis">
+        <div><b>prompt only</b><span>subject and mood. The rest is the mean.</span></div>
+        <div><b>+ references</b><span>this chair, this light, these colours.</span></div>
+        <div><b>+ structure</b><span>the geometry: lines, depth, a pose.</span></div>
+        <div><b>+ your own picture</b><span>start from your sketch or render, not from static. A dial sets how much to loosen it.</span></div>
+        <div><b>+ a mask</b><span>re-noise one region only. Change the sofa, keep the room.</span></div>
+        <div><b>+ your portfolio</b><span>fine-tune the knobs on your own work. Your taste, averaged.</span></div>
+      </div>
+    </div>
+    <div class="further">
+      <div><b>Upscale</b><span>Same loop at higher resolution. It invents the detail it adds. Invented detail looks exactly like documentation.</span></div>
+      <div><b>Video</b><span>Same loop across frames, pushed to stay consistent. It invents the continuity. The 2026 clip.</span></div>
+      <div><b>3D and worlds</b><span>Still mostly pictures from many angles. The geometry is inferred, not measured. Don't dimension off it.</span></div>
+    </div>
+    <p class="big frag" style="font-size:clamp(1.3rem,2.4vw,2.2rem);margin-top:.4em">Whatever you don't pin, it fills with the average. The pinning is the design.</p>
+    <p class="sm frag">Every year or so, a new handle: words, then lines, then references, then whatever is next. Each one hands more of the decision back to you.</p>
+  </div>
+  <aside class="note">The unifying page. Left end: the model decides everything but the subject. Right end: you've decided almost everything and it's filling texture. Every tool they'll meet sits somewhere on this line, and the question to ask of any new one is "what does this let me pin?" The three below the line are the same loop pushed further out, each with its hazard row. Then "the pinning is the design" hands straight into the next pages on thinking and tools, and later into the Double Diamond.</aside>
+</section>
+
+<section class="pg" id="costume" data-ch="How it works" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>How it works · last layer</p>
+  <div class="costume w6" aria-label="A friendly chat window in front of a wall of raw numbers">
+    <pre id="weights" aria-hidden="true"></pre>
+    <div class="card"><span class="dot"></span><p>Hi! How can I help you today?</p><span class="cursor"></span></div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>Dress it as a chat.</h2>
+    <p>The thing underneath predicts. The chat window is a costume: a name, a tone, a "how can I help you today?"</p>
+    <p class="big frag">You're talking to the costume.</p>
+  </div>
+  <aside class="note">Callback to anthropomorphism, and to Yan Shi's wooden man: open it up and it's leather and glue. The costume is a design decision, made by the builder, for everyone. Straight into the V2 spec sheet.</aside>
+</section>
+
+<section class="pg" id="everyone" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2</p>
+  <div class="w6 stack">
+    <h2>Built for everyone.</h2>
+    <p class="lede">That's the spec. Literally: rater preference, averaged over millions of people. A point of view would make it worse for everyone else.</p>
+    <p class="big frag">The product is the mean.</p>
+    <p class="big frag">Remember the brick? This is what it wants to be. A mirror of everyone at once.</p>
+    <p class="sm frag">Averaged faces are rated more attractive than any of the faces that made them. And they belong to nobody.</p>
+  </div>
+  <div class="r5 mirror" style="align-self:center" aria-hidden="true">
+    <svg viewBox="622 134 304 304">
+      <defs><clipPath id="cp-arch"><path id="archclip" d=""/></clipPath></defs>
+      <image href="img/new/ai/ai-2025-dalle.jpg" x="622" y="134" width="304" height="304" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp-arch)"/>
+      <path data-arch d="" fill="none" stroke="var(--fg)" stroke-width="1.5"/>
+    </svg>
+  </div>
+  <aside class="note">The room in the arch is a 2025 generated "room": oak, white, plant, window. Nobody asked for it and everybody gets it. The faces fact is Langlois and Roggman, 1990, "Attractive faces are only average." The model is optimized for exactly that: the averaged, pleasant, nobody's room. Callback to "what does this material want to be."</aside>
+</section>
+
+<section class="pg" id="specv2" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2</p>
+  <div class="c10">
+    <div class="spec-h"><span class="caps">Material datasheet · V2</span><span class="caps">generative · produces</span></div>
+    <dl class="spec">
+      <dt>Designed for</dt><dd>A general assistant for everyone. Plausible text, image, video on demand.</dd>
+      <dt>Optimized for</dt><dd>What the average rater clicks "better" on. Benchmarks. Speed and cost per token.</dd>
+      <dt>Made from</dt><dd>The scraped internet, then rater preference on top.</dd>
+      <dt>Behaves like</dt><dd>The average of everything. Articulate, agreeable, never out of ideas, never specific.</dd>
+      <dt>Fails like</dt><dd>A plausible lie. Stairs to nowhere, impossible light, confident wrong dimensions. Same room for everyone, different room every time. Agrees with you.</dd>
+      <dt>Not for</dt><dd>Ground truth. Exact dimensions. Your client's context. Having a point of view.</dd>
+      <dt>For you</dt><dd class="you">It hands you the mean. The specific is your job.</dd>
+    </dl>
+  </div>
+  <aside class="note">Compare row by row with V1 if there's time. The row that matters: V1 had an answer key. V2 doesn't.</aside>
+</section>
+
+<section class="pg" id="cad" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2 · next to the tools you already know</p>
+  <div class="c10 vs">
+    <div><h3>CAD · BIM · SketchUp</h3><ul><li>exact: 2,400 mm is 2,400 mm</li><li>deterministic: same input, same output</li><li>parametric: change one thing, the rest follows</li><li>it knows what a wall is</li><li>wrong is visible, the clash detector screams</li></ul></div>
+    <div class="ai"><h3>Generative models</h3><ul><li>fuzzy: "about this long"</li><li>probabilistic: same input, different output</li><li>holistic: change one word, everything shifts</li><li>it knows what walls usually look like</li><li>wrong is invisible, it looks finished</li></ul></div>
+  </div>
+  <aside class="note">The anchor to the rest of their course. Two different materials, two different jobs. Nobody would spec veneer for a wet wall.</aside>
+</section>
+
+<section class="pg" id="fails" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2 · fails like</p>
+  <div class="w7" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-self:center">
+    <figure class="fig wide"><img decoding="async" src="img/new/ai/ai-fail-1.jpg" alt="AI render of an atrium where the main stair runs into a glass wall and side stairs lead nowhere"><figcaption>stairs into a glass wall · DALL·E 3, 2024</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/ai/ai-fail-4.jpg" alt="AI video frame of a cat on a bed; a hand emerges from the duvet where no body could be"><figcaption>whose hand is that · Sora, 2024</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/ai/ai-fail-2.jpg" alt="AI render of a newsroom with newspapers hanging from the ceiling and gibberish text everywhere"><figcaption>newspapers grow from the ceiling, no word is a word · Midjourney, 2024</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/ai/ai-fail-3.jpg" alt="AI render of a purple gothic restaurant with arches that lead nowhere and lights without fixtures"><figcaption>arches to nothing, light from nowhere · 2023</figcaption></figure>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <blockquote class="q2">A room is not a room without natural light.<cite><b>Louis Kahn</b></cite></blockquote>
+    <p class="sm frag">The model has seen a million rooms with light. It has never seen where the light came from.</p>
+  </div>
+  <aside class="note">All four are public-domain or CC uploads on Wikimedia Commons. Your own failed renders would land harder, swap them in when you have them. Ask the room to find the mistakes before you say anything: they spot them in seconds. That's the point. They can see it, the model can't.</aside>
+</section>
+
+<section class="pg" id="answerkey" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2</p>
+  <div class="c10 stack">
+    <h2>No answer key.</h2>
+    <p class="lede">Credit scoring wrong is a number. Bedroom wrong is an argument.</p>
+    <p class="big frag">Which means somebody with taste has to notice.</p>
+  </div>
+</section>
+
+<section class="pg" id="honesty" data-ch="Spec sheet V2" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Spec sheet V2 · material honesty</p>
+  <div class="c10 stack">
+    <h2>Nobody wrote "respects load-bearing walls" into the spec.</h2>
+    <p class="lede">You are using a material that was specced for someone else, off-label. That's fine. Veneer wasn't specced for your project either. Just don't make it pretend to be a CAD kernel.</p>
+  </div>
+</section>
+
+<section class="pg" id="bedroom" data-ch="The bedroom" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>The bedroom</p>
+  <div class="c10 stack">
+    <p class="live-tag">live · everyone, same prompt, any tool</p>
+    <h2 class="mono" style="font-size:clamp(1.4rem,3vw,2.6rem)">"design a bedroom"</h2>
+    <p class="lede">Three words. Go.</p>
+  </div>
+  <aside class="note">Give it ninety seconds. Phones out. Meanwhile the next page has six you made before class with the same prompt, in case the wifi dies.</aside>
+</section>
+
+<section class="pg" id="sixrooms" data-ch="The bedroom" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>The bedroom · "design a bedroom" · six seeds, one model, nothing else</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-1.jpg" alt="Generated bedroom: dark wood bed, white duvet, window on the left, rug"></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-2.jpg" alt="Generated bedroom, nearly identical"></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-3.jpg" alt="Generated bedroom, nearly identical, pink duvet"></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-4.jpg" alt="Generated bedroom, nearly identical"></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-5.jpg" alt="Generated bedroom, nearly identical"></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/bedroom-6.jpg" alt="Generated bedroom, nearly identical"></figure>
+  </div>
+  <div class="row" style="justify-content:space-between;align-items:baseline">
+    <p class="big frag" style="margin:0">Whose bedroom is this?</p>
+    <p class="sm" style="margin:0;max-width:34ch;text-align:right">Flux, via pollinations.ai, October 2026. Same three words each time. Nothing else pinned.</p>
+  </div>
+  <aside class="note">Six seeds, six "different" bedrooms: dark wood bed, white duvet, window on the left, rug, two lamps. Ask the question and wait. Then: nobody chose that bed. Nobody chose that window. The model chose the most likely bedroom on the internet, six times. If the room generated their own on the previous page, put theirs next to these; they'll match.</aside>
+</section>
+
+<section class="pg" id="sixrooms2" data-ch="The bedroom" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>The bedroom · "design a bedroom" · the 2026 models, nothing else</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-gflash-1.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>Gemini 3.1 Flash Image</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-oai-1.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>GPT-5.4 Image</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-gpro-1.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>Gemini 3 Pro Image</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-gflash-2.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>Gemini 3.1 Flash Image</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-oai-2.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>GPT-5.4 Image</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/gen/room-gpro-2.jpg" alt="Generated bedroom in a sage, terracotta and oak palette"><figcaption>Gemini 3 Pro Image</figcaption></figure>
+  </div>
+  <div class="row" style="justify-content:space-between;align-items:baseline">
+    <p class="big frag" style="margin:0">Six rooms. One taste. Still nobody's.</p>
+    <p class="sm" style="margin:0;max-width:40ch;text-align:right">Two each from Google's two image models and OpenAI's, generated for this page in October 2026. Same three words.</p>
+  </div>
+  <aside class="note">The newer models stopped repeating the layout and started repeating the taste: sage or beige wall, terracotta throw, oak, rattan pendant, fiddle-leaf fig, round mirror, macramé, jute rug, sheer curtains, window on the right. Six furniture plans, one Pinterest board. That is what "the mean" looks like in 2026: not one room, one style. Ask again: whose bedroom is this? Then the real six.</aside>
+</section>
+
+<section class="pg" id="realrooms" data-ch="The bedroom" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>The bedroom</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-1.jpg" alt="A Finnish loft bedroom"><figcaption>Finland</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-2.jpg" alt="A hotel room in Saigon"><figcaption>a hotel, Saigon</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-3.jpg" alt="A Black Forest farmhouse bedroom"><figcaption>a farmhouse, Black Forest</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-4.jpg" alt="A studio apartment in Minneapolis"><figcaption>a studio, Minneapolis</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-5.jpg" alt="A tatami room with a futon"><figcaption>tatami and futon</figcaption></figure>
+    <figure class="fig wide"><img decoding="async" src="img/new/commons/bedroom-6.jpg" alt="A child's green bedroom"><figcaption>a child's room</figcaption></figure>
+  </div>
+  <p class="big c10 frag">Six real bedrooms. You can tell whose they are. That's the whole difference.</p>
+  <aside class="note">Real rooms, Wikimedia Commons. After the six identical AI bedrooms, flip to these. Each one tells you who sleeps there, what they can afford, what the weather is. Specificity is information. The average has none.</aside>
+</section>
+
+<section class="pg" id="grandma" data-ch="The bedroom" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>The bedroom</p>
+  <div class="w6 stack">
+    <h2>Now your grandmother's bedroom.</h2>
+    <p class="lede">Watch how much you have to supply before the output becomes hers. The window. The altar. The fan. The thing she keeps by the bed.</p>
+    <p class="big frag">The gap between prompt one and prompt two is the design work.</p>
+  </div>
+  <div class="r6 stack" style="align-self:center;gap:10px">
+  <figure class="fig wide" style="aspect-ratio:16/7"><img decoding="async" src="img/new/gen/grandma-promptonly.jpg" alt="Generated bedroom from the prompt alone: a generic warm wooden room"><figcaption>prompt one: "design a bedroom for my grandmother in Thailand" · nothing else</figcaption></figure>
+  <figure class="fig wide" style="aspect-ratio:16/7"><img decoding="async" src="img/new/commons/thai-bedroom.jpg" alt="A bedroom in a wooden Tai Lue house in Phayao: a mattress on the floor, a small altar with offerings, framed portraits of monks"><figcaption>her actual room · Phayao · not in anyone's average</figcaption></figure>
+  </div>
+  <aside class="note">The whole unit in one exercise. If you only keep one page, keep this one.</aside>
+</section>
+
+<section class="pg" id="kleon" data-ch="Good theft" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Good theft</p>
+  <div class="c10 stack">
+    <p class="caps">Austin Kleon · Steal Like an Artist, 2012</p>
+    <table class="theft">
+      <thead><tr><th>Good theft</th><th>Bad theft</th></tr></thead>
+      <tbody>
+        <tr><td>honor</td><td>degrade</td></tr>
+        <tr><td>study</td><td>skim</td></tr>
+        <tr><td>steal from many</td><td>steal from one</td></tr>
+        <tr><td>credit</td><td>plagiarize</td></tr>
+        <tr><td>transform</td><td>imitate</td></tr>
+        <tr><td>remix</td><td>rip off</td></tr>
+      </tbody>
+    </table>
+    <p class="big frag">Which column is the model in?</p>
+  </div>
+  <aside class="note">Row by row, it's genuinely mixed. Steals from many: yes. Credits: no. Transforms: argue. That's why the lawsuits are hard.</aside>
+</section>
+
+<section class="pg" id="200" data-ch="Good theft" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Good theft · discuss</p>
+  <div class="c10 stack">
+    <h2>You study 200 bedrooms on Pinterest and design one.</h2>
+    <h2 class="frag">A model trains on 200 million and generates one.</h2>
+    <p class="big frag">Same act? Different? Why?</p>
+  </div>
+  <aside class="note">Let it run. No resolution. If it stalls: does scale change the ethics? Does the fact that nobody consented? Does the fact that you remember the 200 and it remembers none of them?</aside>
+</section>
+
+<section class="pg" id="miyazaki" data-ch="Good theft" data-shape="blob">
+  <p class="ch"><svg><use href="#s-blob"/></svg>Good theft</p>
+  <div class="w6 stack">
+    <div class="qwrap"><img decoding="async" class="port" src="img/new/commons/miyazaki.jpg" alt="Hayao Miyazaki"><blockquote class="q2">I strongly feel that this is an insult to life itself.<cite><b>Hayao Miyazaki</b> · 2016, shown an AI animation demo</cite></blockquote></div>
+    <div class="row" style="align-items:flex-start;flex-wrap:nowrap;gap:1em">
+      <figure class="fig" style="flex:0 0 32%;aspect-ratio:1024/1240"><img decoding="async" src="img/new/ai/ghibli-trend.jpg" alt="AI-generated image of a girl in a Studio Ghibli style"><figcaption>GPT-4o · 2025</figcaption></figure>
+      <p class="sm" style="margin:0">He was reacting to one grotesque demo, not to image generation in general. In March 2025 the internet turned itself into Ghibli stills for a week anyway. Nobody asked him.</p>
+    </div>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <p class="caps">the courts, so far</p>
+    <ul class="plain sm">
+      <li>Getty Images v. Stability AI, UK</li>
+      <li>Andersen v. Stability AI, US artists</li>
+      <li>New York Times v. OpenAI</li>
+      <li>Bartz v. Anthropic, settled 2025. Training on books they bought: fair use. Keeping a pirated library: not.</li>
+    </ul>
+    <p class="sm frag">That last split is Kleon's table, written by a judge.</p>
+  </div>
+  <aside class="note"><b>Disclosure for you, not the slide:</b> this page was built by Claude, Anthropic is the defendant in the last case. Verify the current status of every case before class, they move.</aside>
+</section>
+
+<section class="pg" id="gap" data-ch="Taste" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Taste</p>
+  <div class="c10 stack">
+    <div class="row" style="align-items:center;gap:1em"><img decoding="async" class="port" src="img/new/commons/ira-glass.jpg" alt="Ira Glass" style="width:clamp(56px,5vw,80px)"><p class="caps" style="margin:0">Ira Glass · 2009 · paraphrased</p></div>
+    <h2>Everyone who does creative work got into it because they have good taste. For years, what you make isn't as good as your taste. That gap is normal. Most people quit inside it.</h2>
+    <p class="big frag">The machine closes the gap for free. Which half did it close?</p>
+  </div>
+  <aside class="note">It closed the making half. The taste half is untouched, and now it's the only half that matters. Paraphrase is faithful to the famous video, the original is spoken and long.</aside>
+</section>
+
+<section class="pg" id="doubleavg" data-ch="Taste" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Taste</p>
+  <figure class="fig r5 wide" style="align-self:center;grid-row:2"><img decoding="async" src="img/new/commons/pinterest-bedroom.jpg" alt="A white loft bedroom with exposed brick and big windows, the kind that fills Pinterest"><figcaption>the feed's favourite bedroom</figcaption></figure>
+  <div class="w6 stack">
+    <h2>Your references were averaged twice.</h2>
+    <p class="lede">The feed picked which rooms you saw, optimizing for your thumb. Then the image model trained on those rooms and compressed them again.</p>
+    <p class="big frag">The feed is a mirror too. Your references are a mirror of a mirror.</p>
+    <p class="big frag">The "Pinterest bedroom" is a double average. Some of your taste was outsourced before you got here.</p>
+  </div>
+  <aside class="note">Callback to the feed page. This is the uncomfortable one. Don't rush it.</aside>
+</section>
+
+<section class="pg" id="einstein" data-ch="Taste" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Taste</p>
+  <div class="c10 stack">
+    <div class="mocks">
+      <div class="mock arm"><p class="caps">exam week, 2009</p><p class="ink">kitchen counter 850–900 · door 2,000 · step riser ≤ 175 · tread ≥ 250 · corridor 900</p></div>
+      <div class="mock search"><p class="caps">2015</p><div class="box"><span>how tall should a kitchen counter be</span></div></div>
+      <div class="mock chat"><p class="caps">now</p><div class="box"><span>design a kitchen for my mother, she is 152 cm and cooks for ten every Sunday</span></div></div>
+    </div>
+    <p class="lede">Memory went external a long time ago. Nobody thinks you're smart for memorizing. Now making is going external too.</p>
+    <p class="big frag">What's left is deciding. Noticing. Caring about this person, this room.</p>
+  </div>
+  <aside class="note">Three eras of the same question. Notes on your arm, a search box, a chat box. Each one outsourced a layer. The last layer, knowing it's your mother and she's 152 cm, is the one nobody can outsource. That's the job.</aside>
+</section>
+
+<section class="pg" id="callback" data-ch="Taste" data-shape="square">
+  <p class="ch"><svg><use href="#s-square"/></svg>Taste</p>
+  <div class="c10 stack">
+    <p class="caps">camp one, one more time</p>
+    <h2 style="color:var(--mute)">It serves me well. I want it to serve me better.</h2>
+    <h2 class="frag">Better at what?</h2>
+    <p class="lede frag">It already does the making. What's left is reading the person in front of you, and most of you haven't built that yet. If you can't read a user, you and the model are interchangeable. And the model is cheaper.</p>
+  </div>
+  <aside class="note">Bookend with the camps page. Camp one wanted to be served better; the only thing left to be better at is the thing the material can't do. Be kind but don't let it go.</aside>
+</section>
+
+<section class="pg" id="dd" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond</p>
+  <div class="c10 art">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Double Diamond: discover, define, develop, deliver">
+      <polygon points="40,150 240,40 440,150 240,260" class="ln"/>
+      <polygon points="460,150 660,40 860,150 660,260" class="ln"/>
+      <polygon points="40,150 240,40 240,260" class="wash"/>
+      <polygon points="460,150 660,40 660,260" class="wash"/>
+      <line x1="240" y1="40" x2="240" y2="260" class="faint"/>
+      <line x1="660" y1="40" x2="660" y2="260" class="faint"/>
+      <text x="140" y="290" text-anchor="middle" class="lbl">discover</text>
+      <text x="340" y="290" text-anchor="middle" class="lbl">define</text>
+      <text x="560" y="290" text-anchor="middle" class="lbl">develop</text>
+      <text x="760" y="290" text-anchor="middle" class="lbl">deliver</text>
+      <text x="140" y="20" text-anchor="middle">expand · it helps</text>
+      <text x="340" y="20" text-anchor="middle">converge · you</text>
+      <text x="560" y="20" text-anchor="middle">expand · it helps</text>
+      <text x="760" y="20" text-anchor="middle">converge · you</text>
+    </svg>
+  </div>
+  <div class="c10 stack" style="gap:.5em">
+    <p class="lede" style="max-width:none">The shaded halves open up. The open halves close down. It can help you open up. You still do the work. And never ask it to close down for you.</p>
+    <p class="big frag">It will, happily. That's the problem. Converging is your job.</p>
+  </div>
+  <aside class="note">Overview, then one page per phase. The sharp rule: it's a fine assistant for expanding, and you're still the one doing the expanding. Converging, picking, deciding, is the design, and the model will do it for you the moment you ask, which is exactly why you shouldn't. "Pick the best one" is the most dangerous prompt in the course. Each phase: what it does, what's yours, the trap. "Your job" is on the page, the adjective is yours.</aside>
+</section>
+
+<section class="pg" id="dd1" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond · discover</p>
+  <div class="w6 stack">
+    <h2>Discover the internet.</h2>
+    <p>Precedent, references, materials, a summary of the building code. What's been done. It's great at this.</p>
+    <p class="sm"><b>Trap:</b> it's the average internet, already feed-filtered. And it invents sources. Check anything you'll cite.</p>
+  </div>
+  <div class="r6 stack">
+    <h2>Discover the actual context.</h2>
+    <p>Site, light, client, body, budget, culture, story. It wasn't there. <b>Your job.</b></p>
+    <p class="sm"><b>Trap:</b> the first kind felt like enough, so you skip this one. This one is what makes it design instead of decoration.</p>
+  </div>
+</section>
+
+<section class="pg" id="dd2" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond · define</p>
+  <div class="c10 stack">
+    <h2>It can write fifty briefs in a minute.</h2>
+    <p class="lede">Picking one is a point of view. Shaping it is design. <b>Your job.</b></p>
+    <p class="sm frag"><b>Trap:</b> a brief that fits everyone fits no one. This is where "built for everyone" meets your project head on.</p>
+  </div>
+</section>
+
+<section class="pg" id="dd3" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond · develop</p>
+  <div class="c10 stack">
+    <h2>Developing is navigating toward the one.</h2>
+    <p class="lede">Not generating as many as possible. A hundred variations isn't a hundred steps forward. It's one step and a pile. It makes each step cheap. Which direction to step is the design. <b>Your job.</b></p>
+    <p class="sm frag"><b>Trap one:</b> it varies around the mean, it doesn't change the frame. <b>Trap two:</b> a polished render looks finished, so you stop thinking too early. The hard decisions, dimensions, structure, ergonomics, live in CAD and BIM, where this material is weakest.</p>
+  </div>
+  <aside class="note">Steer, don't spray.</aside>
+</section>
+
+<section class="pg" id="dd4" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond · deliver</p>
+  <div class="c10 stack">
+    <h2>Renders, fly-throughs, the client email. Yes, please.</h2>
+    <p class="lede">Nobody minds the help. Nobody will ask whether the fly-through was hand-animated. But the quality of what leaves your hands is <b>your job.</b> If it makes bad work and your name is on it, that's on you.</p>
+    <p class="big frag">The tool doesn't sign the drawing.</p>
+    <p class="sm frag"><b>Trap:</b> communication isn't design. A beautiful walk through an unbuildable room. Construction documents need exact, so back to CAD.</p>
+  </div>
+  <aside class="note">Callback to the meat proxy: the proxy forwards output without owning it. The designer owns it.</aside>
+</section>
+
+<section class="pg" id="dd-sum" data-ch="Double Diamond" data-shape="circle">
+  <p class="ch"><svg><use href="#s-circle"/></svg>Double Diamond</p>
+  <div class="c10 stack">
+    <h2>It helps you expand. You still do the doing. You converge.</h2>
+    <p class="lede">It can converge. It will, the moment you ask. That's the one thing not to ask for, because the picking is the design. And discovering the actual context is expanding, and still entirely yours.</p>
+  </div>
+</section>
+
+<section class="pg" id="worldmodel" data-ch="Where it's going" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Where it's going · 1 of 2</p>
+  <div class="w6 art" style="align-self:center">
+    <svg viewBox="0 0 520 300" role="img" aria-label="Three rows: words so far predict the next word; frames so far predict the next frame; the world so far plus an action predict what happens next">
+      <text x="20" y="40" class="lbl">text model</text>
+      <rect x="150" y="22" width="150" height="30" class="wash"/><rect x="150" y="22" width="150" height="30" class="ln"/><text x="225" y="42" text-anchor="middle">words so far</text>
+      <path d="M300 37 H352" class="ln"/><path d="M346 31 l6 6 -6 6" class="ln"/>
+      <rect x="360" y="22" width="140" height="30" class="ln"/><text x="430" y="42" text-anchor="middle" class="lbl">next word</text>
+      <text x="20" y="130" class="lbl">video model</text>
+      <rect x="150" y="112" width="150" height="30" class="wash"/><rect x="150" y="112" width="150" height="30" class="ln"/><text x="225" y="132" text-anchor="middle">frames so far</text>
+      <path d="M300 127 H352" class="ln"/><path d="M346 121 l6 6 -6 6" class="ln"/>
+      <rect x="360" y="112" width="140" height="30" class="ln"/><text x="430" y="132" text-anchor="middle" class="lbl">next frame</text>
+      <text x="20" y="220" class="lbl">world model</text>
+      <rect x="150" y="190" width="150" height="30" class="wash"/><rect x="150" y="190" width="150" height="30" class="ln"/><text x="225" y="210" text-anchor="middle">the room so far</text>
+      <rect x="150" y="232" width="150" height="30" class="ink"/><text x="225" y="252" text-anchor="middle" style="fill:var(--bg)">+ what you do to it</text>
+      <path d="M300 205 H330 V226 H352" class="ln"/><path d="M300 247 H330 V226" class="ln"/><path d="M346 220 l6 6 -6 6" class="ln"/>
+      <rect x="360" y="196" width="140" height="60" class="ln"/><text x="430" y="222" text-anchor="middle" class="lbl">what happens</text><text x="430" y="238" text-anchor="middle" class="lbl">next</text>
+    </svg>
+  </div>
+  <div class="r5 stack" style="align-self:center">
+    <h2>World models.</h2>
+    <p>Next word. Next frame. Next state. The newest models are trained to predict what happens when something acts in a space: open the door, push the chair, move the sun to four o'clock. Google's Genie makes a playable world from one picture. The physics still wobbles.</p>
+    <p class="big frag">The thing it never had: a room that pushes back.</p>
+    <p class="sm frag">Early. The demos are stunning, the consistency isn't. This is the row of the datasheet to watch.</p>
+  </div>
+  <aside class="note">Same loop, one more step out: instead of the next word, the next moment, conditioned on an action. Genie 3 (DeepMind, August 2025) runs a playable world in real time from a prompt; Sora was pitched as a "world simulator" in 2024; LeCun has argued for years that a world model is the missing piece, not more text. Be honest about status: objects still vanish, geometry drifts, nothing is measured. For the room: this is the first version of the material that could, one day, know that the stairs don't reach.</aside>
+</section>
+
+<section class="pg" id="physical" data-ch="Where it's going" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Where it's going · 2 of 2</p>
+  <div class="w5" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-self:center">
+    <figure class="fig" style="aspect-ratio:3/4"><img decoding="async" src="img/new/commons/unitree-g1.jpg" alt="Unitree G1 humanoid robot standing at an exhibition" style="object-position:center top"><figcaption>Unitree G1 · 2024</figcaption></figure>
+    <figure class="fig" style="aspect-ratio:3/4"><img decoding="async" src="img/new/commons/optimus.jpg" alt="Tesla Optimus humanoid robot on a stand in a showroom" style="object-position:center center"><figcaption>Optimus · 2024</figcaption></figure>
+  </div>
+  <div class="r6 stack" style="align-self:center">
+    <h2>Physical AI.</h2>
+    <p>The same loop, in a body. Cameras in, motor commands out. Trained on video of people doing things, then on months of falling over in simulation. The humanoids are going to factories first, and they still fall over a lot.</p>
+    <p class="big frag">This is the one that finally gets burned.</p>
+    <p class="sm frag">Back to the stove. It had learned "hot" from ten million sentences and never touched anything. These will touch things. Then we find out whether that was the missing piece.</p>
+    <p class="sm frag">And notice where the frontier is heading: bodies in rooms. That's your subject. You know things about it that aren't on the internet.</p>
+  </div>
+  <aside class="note">"Physical AI" is NVIDIA's phrase (Jensen Huang, CES 2025). Robot foundation models: Google's RT-2, Physical Intelligence's π0, Figure, Tesla Optimus, Unitree's cheap humanoids. Brooks' line from the intelligence chapter: intelligence needs a body in a world, and the labs have come round to it. Honest status: demos are teleoperated more often than the videos admit; in-home use is years out. For the room: the knowledge of how bodies move through rooms, where people bump, how light and height and threshold feel, is not in any dataset. They have it. The brick page closes next.</aside>
+</section>
+
+<section class="pg" id="close" data-ch="Where it's going" data-shape="arch">
+  <p class="ch"><svg><use href="#s-arch"/></svg>Close</p>
+  <div class="w6 stack" style="align-self:center">
+    <figure class="fig wide contain"><img decoding="async" src="img/robot-path.jpg" alt="Drawing of a robot, and a person walking from A to B"></figure>
+    <figure class="fig wide contain"><img decoding="async" src="img/cable.jpg" alt="Drawing of a cable that got from A to B by a different route"></figure>
+  </div>
+  <div class="r6 stack" style="align-self:center">
+    <p class="lede">We imagined the robot walking from A to B. What arrived was a cable.</p>
+    <blockquote class="q2 frag">What do you want, brick?<cite><b>Louis Kahn</b></cite></blockquote>
+    <p class="big frag">Ask the material. Then decide what <em>you</em> want.</p>
+  </div>
+</section>
+
+<section class="pg" id="speaker" data-ch="Speaker" data-shape="">
+  <p class="ch">Speaker</p>
+  <div class="w5" style="display:grid;grid-template-columns:auto 1fr;gap:1.4em;align-items:center">
+    <img decoding="async" src="img/profile.jpg" alt="The speaker" style="width:clamp(140px,16vw,220px);aspect-ratio:1;object-fit:cover;border-radius:2px">
+    <div class="slot" style="aspect-ratio:auto;min-height:6em"><div><p>add: name, one line</p></div></div>
+  </div>
+  <div class="r5 stack" style="align-self:end">
+    <img src="fnt-logo.svg" alt="Fig n Table" style="height:28px;width:auto">
+    <p class="sm">Interior design practice.</p>
+    <img decoding="async" src="img/paxa-wordmark.png" alt="Paxa Labs" style="height:22px;width:auto;margin-top:1em">
+    <p class="sm">Speech and language AI.</p>
+  </div>
+</section>
+
+<section class="pg" id="credits" data-ch="Sources" data-shape="">
+  <p class="ch">Image sources</p>
+  <div class="c10 stack">
+    <p class="sm">Photographs and figures on these pages come from Wikimedia Commons under the licence shown, from arXiv papers, and from the speaker's own work. Used for teaching.</p>
+    <ol class="credits" id="creditList">
+<li><a href="https://arxiv.org/abs/1406.2661" target="_blank" rel="noopener">Generative Adversarial Networks - Figure 2: samples from the model (MNIST, TFD, CIFAR-10) · Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio · 2014 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/1511.06434" target="_blank" rel="noopener">DCGAN (Unsupervised Representation Learning with Deep Convolutional GANs) - Figure 3: ge… · Alec Radford, Luke Metz, Soumith Chintala · 2015 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/1704.00028" target="_blank" rel="noopener">Improved Training of Wasserstein GANs (WGAN-GP) - Figure 4: 128x128 LSUN bedroom samples · Ishaan Gulrajani, Faruk Ahmed, Martin Arjovsky, Vincent Dumoulin, Aaron Courville · 2017 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/1812.04948" target="_blank" rel="noopener">StyleGAN (A Style-Based Generator Architecture for GANs) - Figure 10: uncurated LSUN BED… · Tero Karras, Samuli Laine, Timo Aila · 2019 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/2112.10752" target="_blank" rel="noopener">High-Resolution Image Synthesis with Latent Diffusion Models - Figure 5: text-to-image s… · Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, Bjorn Ommer · 2022 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/1711.05225" target="_blank" rel="noopener">CheXNet - Figure 1: chest X-ray input and class activation map output · Pranav Rajpurkar, Jeremy Irvin, Kaylie Zhu, Brandon Yang, Hershel Mehta, Tony Duan, Daisy Ding, Aarti Bagul, Robyn L. Ball, Curtis Langlotz, Katie Shpanskaya, Matthew P. Lungren, Andrew Y. Ng · 2017 · arXiv preprint, copyright authors; used for teaching</a></li>
+<li><a href="https://arxiv.org/abs/2102.12092" target="_blank" rel="noopener">Zero-Shot Text-to-Image Generation (DALL-E) - Figure 3: samples vs. prior approaches on… · Aditya Ramesh, Mikhail Pavlov, Gabriel Goh, Scott Gray, Chelsea Voss, Alec Radford, Mark Chen, Ilya Sutskever · 2021 · CC BY 4.0 (arXiv license line: creativecommons.org/licenses/by/4.0/)</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://raw.githubusercontent.com/lllyasviel/ControlNet/main/github_page/p3.png" target="_blank" rel="noopener">ControlNet README: Stable Diffusion 1.5 + ControlNet with M-LSD (Hough) line maps, promp… · Lvmin Zhang, Anyi Rao, Maneesh Agrawala (lllyasviel/ControlNet repository) · 2023 · Apache-2.0 (lllyasviel/ControlNet repository); used for teaching</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_speaking_at_TED.jpg" target="_blank" rel="noopener">Sam Altman on stage at TED, April 2025 · Steve Jurvetson · 2025 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Crawling_..._(8218298892).jpg" target="_blank" rel="noopener">Baby crawling on a tiled floor (black and white) · Subharnab Majumdar from Bangalore, India · 2012 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Bedroom_in_loft_apt_2.jpg" target="_blank" rel="noopener">Bedroom, Scandinavian: loft apartment, Finland · Kotivalo · 2019 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Caravelle_Saigon_-_Signature_Studio_Room.jpg" target="_blank" rel="noopener">Bedroom, hotel: Signature Studio Room, Caravelle Saigon · BaonguyenCaravelas · 2019 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:2023-07-30_Vogtsbauernhof_Ortenauhaus_006.jpg" target="_blank" rel="noopener">Bedroom, rural: Black Forest farmhouse (Ortenauhaus, Vogtsbauernhof open-air museum) · Ahmet Düz, Dreiländer- &amp; Oberrheinfotograf · 2023 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Studio_Apartment_Minneapolis_1.jpg" target="_blank" rel="noopener">Bedroom, small apartment: studio apartment in Minneapolis · Jon Platek · 2010 · CC BY-SA 3.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Iso_Residence_bedroom.jpg" target="_blank" rel="noopener">Bedroom, traditional Japanese: tatami room with futon, Iso Residence · Christophe95 · 2018 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Hannah&#x27;s_Green_Room_Makeover_From_Bed_free_creative_commons_(4186026680).jpg" target="_blank" rel="noopener">Bedroom, child&#x27;s room: green bedroom with pig collection, Utah · Pink Sherbet Photography from Utah, USA · 2009 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Ngv_design,_charles_eames_and_herman_miller,_lounge_chair_670,_1956.JPG" target="_blank" rel="noopener">Eames Lounge Chair (670) and Ottoman, National Gallery of Victoria · sailko · 2009 · CC BY 2.5</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:T.S._Eliot,_1923.JPG" target="_blank" rel="noopener">T. S. Eliot, 1923, photographed by Lady Ottoline Morrell · Lady Ottoline Morrell · 1923 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:ELIZA_conversation.png" target="_blank" rel="noopener">ELIZA conversation screenshot (terminal-style, Norbert Landsteiner&#x27;s 2005 implementation) · Unknown author · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:11.09_%E7%B8%BD%E7%B5%B1%E5%87%BA%E5%B8%AD%E3%80%8C%E7%AC%AC%E4%B8%80%E5%B1%86%E6%9D%8E%E5%9C%8B%E9%BC%8E%E7%8D%8E%E9%A0%92%E7%8D%8E%E5%85%B8%E7%A6%AE%E3%80%8D_-_53319959776.jpg" target="_blank" rel="noopener">Jensen Huang speaking at the first K.T. Li Award ceremony, Taipei, November 2023 · 總統府 · 2023 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Ira_Glass_(2013).jpg" target="_blank" rel="noopener">Ira Glass at the 73rd Peabody Awards · Peabody Awards · 2014 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Louis_Kahn.jpg" target="_blank" rel="noopener">Louis I. Kahn, architect, 1967 · Gerhard Richter · 1967 · CC BY-SA 3.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Kimbell_Art_Museum_January_2017_2.jpg" target="_blank" rel="noopener">Kimbell Art Museum, Fort Worth - gallery interior with cycloid vault and daylight reflec… · Michael Barera · 2017 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:FOSDEM_2008_Main_lecture_theatre.jpg" target="_blank" rel="noopener">University lecture theatre (ULB Brussels, FOSDEM 2008) seen from the back · Stevenfruitsmaak · 2008 · CC BY 2.5</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Hayao_Miyazaki.jpg" target="_blank" rel="noopener">Hayao Miyazaki at the 2008 Venice Film Festival · Thomas Schulz detengase @ Flickr · 2008 · CC BY-SA 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Pablo_picasso_1.jpg" target="_blank" rel="noopener">Pablo Picasso, 1962 (Revista Vea y Lea) · Argentina. Revista Vea y Lea · 1962 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:NY_loft_bedroom_(Unsplash).jpg" target="_blank" rel="noopener">Generic modern bedroom: white walls, wood headboard, desk at the window (Unsplash) · Gabriel Beaudry gbeaudry · 2016 · CC0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Salk_Institute.jpg" target="_blank" rel="noopener">Salk Institute, La Jolla - plaza with the water channel toward the Pacific · TheNose · 2006 · CC BY-SA 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:John_Searle_speaking_at_Google_1.jpg" target="_blank" rel="noopener">John Searle speaking at Google, 2015 · FranksValli · 2015 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Herbert_Simon_close-up_(cropped).jpg" target="_blank" rel="noopener">Herbert A. Simon, 1981 (RIT News and Events) · Rochester Institute of Technology · 1981 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Architecture_Students_(5118388410).jpg" target="_blank" rel="noopener">Architecture student working on models in the studio, Tulane University · Tulane Public Relations · 2010 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Tai_Lue_House_of_Mae_Saeng_Da_%E0%B9%80%E0%B8%AE%E0%B8%B7%E0%B8%AD%E0%B8%99%E0%B9%84%E0%B8%95%E0%B8%A5%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B9%81%E0%B8%AA%E0%B8%87%E0%B8%94%E0%B8%B2_%E0%B8%AD%E0%B8%B3%E0%B9%80%E0%B8%A0%E0%B8%AD%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%84%E0%B8%B3_%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%B0%E0%B9%80%E0%B8%A2%E0%B8%B2_-_img_08.jpg" target="_blank" rel="noopener">Bedroom in the Tai Lue house of Mae Saeng Da, Chiang Kham, Phayao, Thailand · Chainwit. · 2021 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Le_Penseur_in_the_Jardin_du_Mus%C3%A9e_Rodin,_Paris_14_June_2015.jpg" target="_blank" rel="noopener">Auguste Rodin, Le Penseur (The Thinker), garden of the Musee Rodin, Paris, against blue… · Douglas O&#x27;Brien from Canada · 2015 · CC BY-SA 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Alan_Turing_(1951).jpg" target="_blank" rel="noopener">Alan Turing, portrait by Elliott &amp; Fry, 1951 · Elliott &amp; Fry · 1951 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Mark_Zuckerberg_(2025)_(cropped).jpg" target="_blank" rel="noopener">Mark Zuckerberg, portrait, September 2025 · Jeff Sainlar; Social Producer and Editor, Meta · 2025 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Clippy_fanart.png" target="_blank" rel="noopener">Clippy, fan drawing of the Office 97 assistant · wunkypunk · 2025 · CC BY-SA 3.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Nokia_3210_(9136307576).jpg" target="_blank" rel="noopener">Nokia 3210 (1999), the T9 predictive-text phone · FaceMePLS from The Hague, The Netherlands · 2013 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:StockholmOptimus01.jpg" target="_blank" rel="noopener">Tesla Optimus humanoid robot, Stockholm, 2024 · Ulkl · 2024 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File:Unitree_G1.jpg" target="_blank" rel="noopener">Unitree G1 humanoid robot, 2024 · Sayanesy · 2024 · CC0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ARoom_with_an_urealistic_view_on_a_forest_landscape_by_AI%3B_%27The_Television%27s_in_Another_Room%27.jpg" target="_blank" rel="noopener">Living room with sofa, glass coffee table and panoramic window over mountains · Dennis Sylvester Hurd · 2023 · CC0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AHI-m%C3%A4rkt_kontorsmilj%C3%B6_%E2%80%93_skandinavisk_minimalism_%28AI-genererad%29.png" target="_blank" rel="noopener">Scandinavian-minimalist office/dining room: oak table, plywood chairs, plants, radiator,… · DALL·E (OpenAI), uppladdad av Kristin Östberg · 2025 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AGemini_Generated_Image_hii02vhii02vhii0.png" target="_blank" rel="noopener">Manor-style butler cafe interior: oak panelling, chandeliers, drapes, upholstered chairs · 제작자: Nano Banana Pro · 2025 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AImages-Stair_scientist_explains-dalle2.jpg" target="_blank" rel="noopener">Atrium with grand staircase, scientist talking to school children · Dall-e3 · 2024 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AFotograf%C3%ADa_creada_con_IA_sobre_una_redacci%C3%B3n_digital_en_el_Siglo_XXI._%28Midjourney_IA%29.png" target="_blank" rel="noopener">Open-plan newsroom / office · Pablovil · 2024 · CC BY 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AGothic_Amethyst_Restaurant_Interior_at_Night_%28CLIP-Guided_Diffusion%29.jpg" target="_blank" rel="noopener">Gothic restaurant interior at night (purple) · © VulcanSphere / CC BY 4.0 · 2023 · CC BY 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ACat-on-bed.webm" target="_blank" rel="noopener">Bedroom: ginger cat on a bed waking a sleeping person (frame from Sora text-to-video) · Sora/OpenAI · 2024 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AAnime_girl.png" target="_blank" rel="noopener">Ghibli-style anime girl waving (GPT-4o / GPT Image 1 &#x27;Ghiblification&#x27; style) · ChatGPT · 2025 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AMoodboard.jpg" target="_blank" rel="noopener">Fashion-studio mood/line board: sketches, fabric swatches, sticky notes pinned to a wall · Aminabell · 2016 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AA_doggy_MamaD_liked_%2814398569890%29.jpg" target="_blank" rel="noopener">Chihuahua face, frontal, cream/tan, dark eyes and nose · Andy Reago &amp; Chrissy McClarren · 2014 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AA_Chihuahua_at_Taipei_20091106.jpg" target="_blank" rel="noopener">Chihuahua face, frontal, tan with white blaze · Yi Chen · 2009 · CC BY 2.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AChihuahua_macho.jpg" target="_blank" rel="noopener">Chihuahua face, frontal, tan, blurred green background · Hugoesteban14 · 2020 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ASoliPics_038.jpg" target="_blank" rel="noopener">Brown chihuahua face wrapped in a towel - the most muffin-like of the set · CC BY 1.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3A2021-03-23_14_10_03_Blueberry_muffin_from_Costco_in_the_Dulles_section_of_Sterling%2C_Loudoun_County%2C_Virginia.jpg" target="_blank" rel="noopener">Blueberry muffin from above/slight angle, three berries placed like eyes and nose · Famartin · 2021 · CC BY-SA 4.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3AMuffin_NIH.jpg" target="_blank" rel="noopener">Blueberry muffin, slight angle, white background (NCI stock photo) · National Cancer Institute, Renee Comet (photographer) · 1994 · Public domain</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ABlueberry_muffin.JPG" target="_blank" rel="noopener">Blueberry muffin on a white plate, top-down · BrokenSphere · 2008 · CC BY-SA 3.0</a></li>
+<li><a href="https://commons.wikimedia.org/wiki/File%3ABlueberry_Muffin_%2853835455760%29.png" target="_blank" rel="noopener">Blueberry muffin on a paper towel, slight angle · The Marmot · 2024 · CC BY 2.0</a></li>
+<li><a href="https://x.com/WorldEverett/status/2105275472552542625" target="_blank" rel="noopener">Cinematic luxury interior advertisement from one reference image (Kling 4.0 Flash, video) · Everett World (@WorldEverett) · 2026 · © the author, posted on X; used for teaching with credit</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 1 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 101 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 2 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 202 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 3 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 303 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 4 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 404 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 5 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 505 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://pollinations.ai" target="_blank" rel="noopener">“design a bedroom”, output 6 of 6 · Flux via pollinations.ai, prompt: design a bedroom, seed 606 · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">prompt-only: &quot;design a bedroom for my grandmother in Thailand&quot; · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">grandmother&#x27;s bedroom from three references and the prompt on the page · Gemini 3 Pro Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, Gemini 3.1 Flash Image · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, Gemini 3.1 Flash Image · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, Gemini 3 Pro Image · Gemini 3 Pro Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, Gemini 3 Pro Image · Gemini 3 Pro Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, GPT-5.4 Image · GPT-5.4 Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">&quot;design a bedroom&quot;, GPT-5.4 Image · GPT-5.4 Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">white clay model of a bedroom, generated to stand in for a modelling-program export · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">teak swatch, generated · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">rattan swatch, generated · Gemini 3.1 Flash Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+<li><a href="https://openrouter.ai" target="_blank" rel="noopener">the model rendered with the teak, rattan and chair references and the prompt on the page · Gemini 3 Pro Image via OpenRouter · 2026 · generated for this page, 2026</a></li>
+</ol>
+  </div>
+</section>
+
+</main>
+
+<script type="application/json" id="arcTasks">[{"train": [{"input": [[1, 1, 1], [0, 0, 0], [0, 0, 0]], "output": [[0, 0, 0], [1, 1, 1], [0, 0, 0]]}, {"input": [[0, 0, 0], [1, 1, 1], [0, 0, 0]], "output": [[0, 0, 0], [0, 0, 0], [1, 1, 1]]}, {"input": [[0, 1, 0], [1, 1, 0], [0, 0, 0]], "output": [[0, 0, 0], [0, 1, 0], [1, 1, 0]]}, {"input": [[0, 2, 2], [0, 0, 2], [0, 0, 0]], "output": [[0, 0, 0], [0, 2, 2], [0, 0, 2]]}], "test": [{"input": [[2, 0, 0], [2, 0, 0], [0, 0, 0]], "output": [[0, 0, 0], [2, 0, 0], [2, 0, 0]]}, {"input": [[0, 0, 0], [0, 1, 0], [0, 0, 0]], "output": [[0, 0, 0], [0, 0, 0], [0, 1, 0]]}]},{"test": [{"input": [[6, 4, 4], [6, 6, 4], [4, 6, 7]], "output": [[7, 6, 4], [4, 6, 6], [4, 4, 6]]}], "train": [{"input": [[2, 2, 1], [2, 1, 2], [2, 8, 1]], "output": [[1, 8, 2], [2, 1, 2], [1, 2, 2]]}, {"input": [[9, 2, 4], [2, 4, 4], [2, 9, 2]], "output": [[2, 9, 2], [4, 4, 2], [4, 2, 9]]}, {"input": [[8, 8, 8], [5, 5, 8], [8, 5, 5]], "output": [[5, 5, 8], [8, 5, 5], [8, 8, 8]]}, {"input": [[3, 2, 9], [9, 9, 9], [2, 3, 3]], "output": [[3, 3, 2], [9, 9, 9], [9, 2, 3]]}]}]</script>
+<script>
+(function(){
+  // Arch and circle paths come from the logo file; filled here to keep the symbol block readable.
+  var ARCH = "M 911.476562 434.785156 C 904.238281 358.296875 899.144531 286.273438 862.503906 221.464844 C 849.863281 199.101562 831.71875 182.121094 808.472656 170.71875 C 763.636719 148.730469 719.296875 165.460938 688.089844 214.871094 C 659.453125 260.214844 651.0625 311.472656 643.226562 362.835938 C 639.632812 386.394531 639.046875 410.414062 637.046875 434.785156 Z M 911.476562 434.785156 ";
+  var CIRCLE = "M 220.347656 313.640625 C 220.921875 389.769531 285.394531 452.40625 359.535156 448.855469 C 440.210938 444.996094 500.753906 380.570312 494.964844 306.417969 C 491.242188 258.742188 467.652344 222.953125 429.726562 197.457031 C 409.703125 183.996094 387.441406 174.753906 359.253906 179.050781 C 342.53125 181.601562 325.089844 181.578125 308.605469 187.515625 C 253.710938 207.300781 219.910156 255.609375 220.347656 313.640625 ";
+  document.getElementById('archpath').setAttribute('d', ARCH);
+  document.getElementById('circlepath').setAttribute('d', CIRCLE);
+  var ac = document.getElementById('archclip'); if(ac) ac.setAttribute('d', ARCH);
+  document.querySelectorAll('path[data-arch]').forEach(function(el){ el.setAttribute('d', ARCH); });
+
+  var deck = document.getElementById('deck');
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.pg'));
+  var counter = document.getElementById('counter');
+  var rail = document.getElementById('rail');
+  var indexList = document.getElementById('indexList');
+  var cur = 0;
+  var narrow = function(){ return window.matchMedia('(max-width:820px)').matches; };
+
+  // Chapters: first page of each data-ch value.
+  var chapters = [];
+  pages.forEach(function(p,i){
+    var name = p.dataset.ch;
+    if(!chapters.length || chapters[chapters.length-1].name !== name){
+      chapters.push({name:name, start:i, shape:p.dataset.shape, id:p.id});
+    }
+  });
+  chapters.forEach(function(c){
+    var a = document.createElement('a');
+    a.href = '#'+c.id;
+    a.innerHTML = (c.shape ? '<svg><use href="#s-'+c.shape+'"/></svg>' : '<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="2"/></svg>') + '<span>'+c.name+'</span>';
+    rail.appendChild(a);
+    var li = document.createElement('li');
+    li.innerHTML = '<a href="#'+c.id+'">'+(c.shape ? '<svg><use href="#s-'+c.shape+'"/></svg>' : '<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="2"/></svg>')+c.name+'<small>'+(c.start+1)+'</small></a>';
+    indexList.appendChild(li);
+    c.railEl = a;
+  });
+
+  function setCur(i){
+    cur = i;
+    counter.textContent = (i+1)+' / '+pages.length;
+    var ch = chapters.filter(function(c){ return c.start <= i; }).pop();
+    chapters.forEach(function(c){ c.railEl.classList.toggle('on', c === ch); });
+    try{ localStorage.setItem('deck:pos', pages[i].id); }catch(e){}
+    document.querySelectorAll('video').forEach(function(v){ if(pages[i].contains(v)){ var pr = v.play(); if(pr && pr.catch) pr.catch(function(){}); } else { v.pause(); } });
+  }
+  function scroller(){ return narrow() ? window : deck; }
+  function scrollTopNow(){ return narrow() ? (window.scrollY || document.documentElement.scrollTop) : deck.scrollTop; }
+  function pageTop(p){ return narrow() ? p.getBoundingClientRect().top + scrollTopNow() : p.offsetTop; }
+  var ticking = false;
+  function track(){
+    ticking = false;
+    var y = scrollTopNow(), best = 0, bestD = Infinity;
+    for(var i=0;i<pages.length;i++){ var d = Math.abs(pageTop(pages[i]) - y); if(d < bestD){ bestD = d; best = i; } }
+    if(best !== cur) setCur(best);
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(track); } }
+  deck.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  function go(i){
+    i = Math.max(0, Math.min(pages.length-1, i));
+    pages[i].scrollIntoView({behavior:'auto', block:'start'});
+    setCur(i);
+  }
+  function revealNext(){
+    var fr = pages[cur].querySelectorAll('.frag:not(.on)');
+    if(fr.length){ fr[0].classList.add('on'); return true; }
+    return false;
+  }
+  function hideLast(){
+    var fr = pages[cur].querySelectorAll('.frag.on');
+    if(fr.length){ fr[fr.length-1].classList.remove('on'); return true; }
+    return false;
+  }
+
+  var index = document.getElementById('index');
+  function toggleIndex(force){ index.hidden = force === undefined ? !index.hidden : !force; }
+  document.getElementById('idxBtn').addEventListener('click', function(){ toggleIndex(); });
+  document.getElementById('idxClose').addEventListener('click', function(){ toggleIndex(false); });
+  indexList.addEventListener('click', function(e){ if(e.target.closest('a')) toggleIndex(false); });
+  document.getElementById('noteBtn').addEventListener('click', function(){ document.body.classList.toggle('notes'); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.target.matches('input,textarea')) { if(e.key==='Escape') e.target.blur(); return; }
+    if(e.metaKey || e.ctrlKey || e.altKey) return;
+    switch(e.key){
+      case 'ArrowDown': case 'PageDown': case ' ': e.preventDefault(); go(cur+1); break;
+      case 'ArrowUp': case 'PageUp': e.preventDefault(); go(cur-1); break;
+      case 'ArrowRight': e.preventDefault(); if(!revealNext()) go(cur+1); break;
+      case 'ArrowLeft': e.preventDefault(); if(!hideLast()) go(cur-1); break;
+      case 'Home': e.preventDefault(); go(0); break;
+      case 'End': e.preventDefault(); go(pages.length-1); break;
+      case 'i': case 'I': toggleIndex(); break;
+      case 'n': case 'N': document.body.classList.toggle('notes'); break;
+      case 'f': case 'F': if(document.fullscreenElement){ document.exitFullscreen && document.exitFullscreen(); } else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen().catch(function(){}); } break;
+      case 'Escape': toggleIndex(false); break;
+    }
+  });
+  // Click on empty page area reveals the next fragment (desktop only).
+  deck.addEventListener('click', function(e){
+    if(narrow()) return;
+    if(e.target.closest('a,button,input,label,.scribe,.vote,.demo')) return;
+    revealNext();
+  });
+
+  // ---- Paint-match demo: the room turns the knobs; only the error comes back ----
+  (function(){
+    var T = document.getElementById('swTarget'); if(!T) return;
+    var G = document.getElementById('swGuess'), K = document.getElementById('paintKnobs'), rows = K.querySelectorAll(':scope > div'),
+        trail = document.getElementById('trail'), errEl = document.getElementById('fitErr'), nameEl = document.getElementById('colorName'),
+        runBtn = document.getElementById('fitRun'), revBtn = document.getElementById('fitReveal');
+    var NAMES = [['coral',255,127,80],['sage',156,175,136],['terracotta',226,114,91],['dusty rose',220,174,150],['teal',0,128,128],['mustard',255,219,88],['olive',128,128,0],['lavender',200,180,230],['salmon',250,128,114],['ochre',204,119,34],['slate',112,128,144],['peach',255,229,180],['burgundy',128,0,32],['charcoal',54,69,79],['taupe',140,120,100],['mint',152,255,152],['rust',183,65,14],['navy',0,0,128],['mauve',190,160,200],['sand',225,200,160]];
+    var t=[0,0,0], g=[0,0,0], timer=null, step=0, last=-1;
+    function css(c){ return 'rgb('+c.map(Math.round).join(',')+')'; }
+    function err(){ var e=0; for(var i=0;i<3;i++){ e += (g[i]-t[i])*(g[i]-t[i]); } return Math.sqrt(e); }
+    function render(){
+      G.style.background = css(g); T.style.background = css(t);
+      rows.forEach(function(r,i){ r.querySelector('i').style.width = (g[i]/255*100)+'%'; r.querySelector('em').style.left = (t[i]/255*100)+'%'; r.querySelector('b').textContent = Math.round(g[i]); });
+      var e = err(); var big = document.getElementById('errBig'); if(big) big.textContent = 'error '+Math.round(e); errEl.textContent = 'error '+Math.round(e)+(step?'   step '+step:'');
+    }
+    function mark(){ var i = document.createElement('i'); i.style.background = css(g); trail.appendChild(i); while(trail.children.length > 32) trail.removeChild(trail.firstChild); }
+    function clamp(){ for(var i=0;i<3;i++) g[i] = Math.max(0, Math.min(255, g[i])); }
+    function nudge(){ for(var i=0;i<3;i++){ g[i] -= 0.22*(g[i]-t[i]) + (Math.random()-0.5)*1.5; } clamp(); step++; mark(); render(); }
+    function stop(){ if(timer){ clearInterval(timer); timer=null; runBtn.textContent='Let the machine do it'; } }
+    function reveal(on){ T.classList.toggle('hidden', !on); K.classList.toggle('revealed', on); revBtn.textContent = on ? 'Hide sample' : 'Reveal sample'; }
+    function reset(){ stop(); var k; if(last<0){ k=0; } else { do { k = Math.floor(Math.random()*NAMES.length); } while(k===last); } last=k; var n = NAMES[k]; nameEl.textContent = n[0]; t=[n[1],n[2],n[3]]; g=[128,128,128]; step=0; trail.innerHTML=''; reveal(false); mark(); render(); }
+    K.addEventListener('click', function(e){ var b = e.target.closest('button[data-k]'); if(!b) return; stop(); g[+b.dataset.k] += 14*(+b.dataset.d); clamp(); mark(); render(); });
+    runBtn.addEventListener('click', function(){ if(timer){ stop(); return; } runBtn.textContent='Pause'; timer=setInterval(function(){ nudge(); if(err()<2 || step>80) stop(); }, 220); });
+    revBtn.addEventListener('click', function(){ reveal(T.classList.contains('hidden')); });
+    document.getElementById('fitReset').addEventListener('click', reset);
+    reset();
+  })();
+
+  // ---- Network diagram: knobs drawn as line weights ----
+  (function(){
+    var L = document.getElementById('netLines'), N = document.getElementById('netNodes'); if(!L) return;
+    var layers = [3,5,5,1], xs = [40,150,260,380], nodes = [];
+    layers.forEach(function(n,li){ var col=[]; for(var i=0;i<n;i++){ col.push([xs[li], 130 + (i-(n-1)/2)*42]); } nodes.push(col); });
+    var lines='', dots='';
+    for(var l=0;l<nodes.length-1;l++){ nodes[l].forEach(function(a){ nodes[l+1].forEach(function(b){ var w = Math.random(); lines += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke-width="'+(0.3+w*2.6).toFixed(2)+'" opacity="'+(0.25+w*0.75).toFixed(2)+'"/>'; }); }); }
+    nodes.forEach(function(col){ col.forEach(function(p){ dots += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" class="ink"/>'; }); });
+    L.innerHTML = lines; N.innerHTML = dots;
+    L.style.transition = 'none';
+    var nb = document.getElementById('netNudge');
+    if(nb) nb.addEventListener('click', function(){ Array.prototype.forEach.call(L.children, function(el){ var w = Math.max(0.3, Math.min(2.9, parseFloat(el.getAttribute('stroke-width')) + (Math.random()-0.5)*1.2)); el.style.transition='stroke-width .5s, opacity .5s'; el.setAttribute('stroke-width', w.toFixed(2)); el.setAttribute('opacity', (0.2 + (w/2.9)*0.8).toFixed(2)); }); });
+  })();
+
+  // Costume: a wall of raw numbers behind the chat card.
+  (function(){
+    var w = document.getElementById('weights'); if(!w) return;
+    var rows=[]; for(var r=0;r<60;r++){ var row=[]; for(var c=0;c<22;c++){ var v=(Math.random()*2-1); row.push((v<0?'':' ')+v.toFixed(4)); } rows.push(row.join(' ')); }
+    w.textContent = rows.join('\n');
+  })();
+
+  // Denoising illustration: one sheet of static, blended over the picture at a chosen level.
+  (function(){
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('.noise')); if(!boxes.length) return;
+    var src = document.createElement('canvas'); src.width = 320; src.height = 180;
+    var ctx = src.getContext('2d'); var im = ctx.createImageData(320,180); var d = im.data;
+    for(var i=0;i<d.length;i+=4){ var g = (Math.random()*255)|0; d[i]=g; d[i+1]=g*0.98; d[i+2]=g*0.95; d[i+3]=255; }
+    ctx.putImageData(im,0,0);
+    function setLevel(box, t){ var cv = box.querySelector('canvas'), img = box.querySelector('img'); if(!cv || !img) return; cv.style.opacity = t; img.style.filter = 'blur('+(t*14)+'px) saturate('+(1-t*0.8)+')'; }
+    boxes.forEach(function(box){ var cv = box.querySelector('canvas'); if(!cv) return; cv.width = 320; cv.height = 180; cv.getContext('2d').drawImage(src,0,0); if(box.dataset.level !== undefined) setLevel(box, +box.dataset.level); });
+    var nr = document.getElementById('noiseRange'), slider = document.getElementById('noiseBox');
+    if(nr && slider){ var upd = function(){ setLevel(slider, nr.value/100); }; nr.addEventListener('input', upd); upd(); }
+  })();
+
+  // Edge map: what a structure control actually hands the model. Sobel filter on the photo, drawn live.
+  (function(){
+    var img = document.getElementById('edgeSrc'), cv = document.getElementById('edgeOut'); if(!img || !cv) return;
+    function go(){
+      var W = 360, H = Math.max(2, Math.round(W * img.naturalHeight / img.naturalWidth)) || 240;
+      var off = document.createElement('canvas'); off.width = W; off.height = H; var o = off.getContext('2d'); o.drawImage(img, 0, 0, W, H);
+      var d; try { d = o.getImageData(0, 0, W, H).data; } catch(e){ cv.parentElement.hidden = true; return; }
+      var g = new Float32Array(W*H), i;
+      for(i=0;i<W*H;i++){ g[i] = 0.299*d[i*4] + 0.587*d[i*4+1] + 0.114*d[i*4+2]; }
+      cv.width = W; cv.height = H; var c = cv.getContext('2d'); var out = c.createImageData(W, H); var p = out.data;
+      for(var y=1;y<H-1;y++) for(var x=1;x<W-1;x++){
+        i = y*W + x;
+        var gx = -g[i-W-1] - 2*g[i-1] - g[i+W-1] + g[i-W+1] + 2*g[i+1] + g[i+W+1];
+        var gy = -g[i-W-1] - 2*g[i-W] - g[i-W+1] + g[i+W-1] + 2*g[i+W] + g[i+W+1];
+        var v = Math.sqrt(gx*gx + gy*gy) > 90 ? 255 : 0;
+        p[i*4] = v; p[i*4+1] = v; p[i*4+2] = v; p[i*4+3] = 255;
+      }
+      c.putImageData(out, 0, 0);
+    }
+    if(img.complete && img.naturalWidth) go(); else img.addEventListener('load', go);
+  })();
+
+  // Resume where the presenter left off (same browser). Only on desktop, and only without a hash.
+  if(!location.hash && !narrow()){
+    try{ var id = localStorage.getItem('deck:pos'); var el = id && document.getElementById(id); if(el){ var i = pages.indexOf(el); if(i>0){ el.scrollIntoView({behavior:'auto'}); setCur(i); } } }catch(e){}
+  } else if(location.hash){
+    var h = document.getElementById(location.hash.slice(1)); if(h){ var k = pages.indexOf(h); if(k>=0) setCur(k); }
+  }
+  setCur(cur);
+})();
+</script>
+</body></html>
